@@ -1,8 +1,8 @@
 "use client"
-import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs"
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton, SignOutButton } from "@clerk/nextjs"
 import { Button, NavbarBrand, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuItem, NavbarMenuToggle, Navbar as NextNavBar } from "@nextui-org/react"
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {dark} from "@clerk/themes";
 import { IsLoggedIn } from "@/Actions/isLoggedIn"
 
@@ -12,10 +12,9 @@ interface IMenuItemProps {
     showWhileLoggedIn: boolean
 }
 
-export default function NavBar() {
+export default function NavBar({ loggedIn}: {loggedIn: boolean}) {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [activePage, setActivePage] = useState()
-    var LoggedIn: boolean
 
     const menuItems: Record<string, IMenuItemProps>[] = [
         {"Home": {
@@ -37,15 +36,23 @@ export default function NavBar() {
             path: "/about",
             showWhileLoggedIn: true,
             showWhileLoggedOut: true,
-        }},
-        {"Log Out": {
-            path: "",
-            showWhileLoggedIn: true,
-            showWhileLoggedOut: false,
-        }},
+        }}
     ]
 
-    IsLoggedIn().then((value: boolean) => LoggedIn = value)
+    function getItemsShowWhileLoggedIn() {
+        return menuItems.filter(item => {
+            const key = (Object.keys(item) as string[])[0]
+            return item[key].showWhileLoggedIn
+        })
+    }
+
+    function getItemsShowWhileLoggedOut() {
+        return menuItems.filter(item => {
+            const key = (Object.keys(item) as string[])[0]
+            return item[key].showWhileLoggedOut
+        })
+    }
+
 
     return (
         <NextNavBar onMenuOpenChange={setIsMenuOpen} className="bg-black bg-opacity-95 backdrop-blur-md border-b border-gray-800 fixed shadow">
@@ -107,7 +114,7 @@ export default function NavBar() {
 
             <NavbarMenu>
                 <SignedIn>
-                    {menuItems.map((item: Record<string, IMenuItemProps>, index: number) => (
+                    {getItemsShowWhileLoggedIn().map((item: Record<string, IMenuItemProps>, index: number) => (
                         <NavbarMenuItem key={`${item[1]}-${index}`}>
                             <Link
                                 color={
@@ -121,7 +128,47 @@ export default function NavBar() {
 
                         </NavbarMenuItem>
                     ))}
+                    <SignOutButton>
+                        <Link
+                            className="w-full text-danger-500"
+                            href=""
+                        >
+                            Log out
+                        </Link>
+                    </SignOutButton>
                 </SignedIn>
+                <SignedOut>
+                    {getItemsShowWhileLoggedOut().map((item: Record<string, IMenuItemProps>, index: number) => (
+                        <NavbarMenuItem key={`${item[1]}-${index}`}>
+                            <Link
+                                color={
+                                    index === 2 ? "primary" : index === menuItems.length - 1 ? "danger" : "foreground"
+                                }
+                                className="w-full"
+                                href={item[(Object.keys(item) as string[])[0]].path}
+                            >
+                                {(Object.keys(item) as string[])[0]}
+                            </Link>
+
+                        </NavbarMenuItem>
+                    ))}
+                    <SignInButton>
+                        <Link
+                            className="w-full"
+                            href=""
+                        >
+                            Sign In
+                        </Link>
+                    </SignInButton>
+                    <SignUpButton>
+                        <Link
+                            className="w-full text-primary-500"
+                            href=""
+                        >
+                            Sign Up
+                        </Link>
+                    </SignUpButton>
+                </SignedOut>
             </NavbarMenu>
         </NextNavBar>
     )
