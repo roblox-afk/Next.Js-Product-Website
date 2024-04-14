@@ -1,7 +1,9 @@
 "use server"
-import { currentUser } from "@clerk/nextjs"
+
+import { supabase } from "@/lib/supabase"
 
 export async function IsLoggedIn() {
-    const user = await currentUser()
-    return user ? true : false
+    const { data: { user } } = await supabase.auth.getUser()
+    console.log(user)
+    return false
 }

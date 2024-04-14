@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { NextUIProviders } from "@/components/providers/nextUi-provider";
+import { dark } from "@clerk/themes";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,13 +16,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <ClerkProvider>
         <body>
           <NextUIProviders>
             {children}
           </NextUIProviders>
         </body>
-      </ClerkProvider>
     </html>
   );
 }
+
+{/* <ClerkProvider appearance={{
+  baseTheme: dark
+}}> */}

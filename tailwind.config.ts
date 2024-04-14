@@ -9,6 +9,7 @@ const config = {
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+    './node_modules/@tremor/**/*.{js,ts,jsx,tsx}',
 	],
   prefix: "",
   theme: {
@@ -19,9 +20,12 @@ const config = {
         "2xl": "1400px",
       },
     },
+    transparent: 'transparent',
+    current: 'currentColor',
     extend: {
     },
   },
+
   plugins: [require("tailwindcss-animate"), nextui({
     prefix: "nextui", // prefix for themes variables
     addCommonColors: false, // override common colors (e.g. "blue", "green", "pink").

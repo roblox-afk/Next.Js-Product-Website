@@ -5,8 +5,11 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import {dark} from "@clerk/themes";
 import { IsLoggedIn } from "@/Actions/isLoggedIn"
+import { supabase } from "@/lib/supabase"
+import NavBarQuickLinks from "./NavBar-QuickLinks"
+import NavBarQuickMenuLinks from "./NavBar-QuickMenuLinks"
 
-interface IMenuItemProps {
+export interface IMenuItemProps {
     path: string,
     showWhileLoggedOut: boolean,
     showWhileLoggedIn: boolean
@@ -39,20 +42,6 @@ export default function NavBar({ loggedIn}: {loggedIn: boolean}) {
         }}
     ]
 
-    function getItemsShowWhileLoggedIn() {
-        return menuItems.filter(item => {
-            const key = (Object.keys(item) as string[])[0]
-            return item[key].showWhileLoggedIn
-        })
-    }
-
-    function getItemsShowWhileLoggedOut() {
-        return menuItems.filter(item => {
-            const key = (Object.keys(item) as string[])[0]
-            return item[key].showWhileLoggedOut
-        })
-    }
-
 
     return (
         <NextNavBar onMenuOpenChange={setIsMenuOpen} className="bg-black bg-opacity-95 backdrop-blur-md border-b border-gray-800 fixed shadow">
@@ -84,91 +73,11 @@ export default function NavBar({ loggedIn}: {loggedIn: boolean}) {
                 </NavbarItem>
             </NavbarContent>
             <NavbarContent justify="end">
-                <SignedOut>
-                    <NavbarItem className="hidden lg:flex">
-                        <SignInButton>
-                            <Link href="">Login</Link>
-                        </SignInButton>
-                    </NavbarItem>
-                    <NavbarItem>
-                        <SignUpButton>
-                            <Button as={Link} color="primary" href="" variant="flat">
-                                Sign Up
-                            </Button>
-                        </SignUpButton>
-                    </NavbarItem>
-                </SignedOut>
-                <SignedIn>
-                    <NavbarItem>
-                        <Button as={Link} color="primary" href="/dashboard" variant="flat">
-                            Dashboard
-                        </Button>
-                    </NavbarItem>
-                    <NavbarItem>
-                        <UserButton appearance={{
-                            baseTheme: dark
-                        }} />
-                    </NavbarItem>
-                </SignedIn>
+                <NavBarQuickLinks loggedIn={loggedIn} />
             </NavbarContent>
 
             <NavbarMenu>
-                <SignedIn>
-                    {getItemsShowWhileLoggedIn().map((item: Record<string, IMenuItemProps>, index: number) => (
-                        <NavbarMenuItem key={`${item[1]}-${index}`}>
-                            <Link
-                                color={
-                                    index === 2 ? "primary" : index === menuItems.length - 1 ? "danger" : "foreground"
-                                }
-                                className="w-full"
-                                href={item[(Object.keys(item) as string[])[0]].path}
-                            >
-                                {(Object.keys(item) as string[])[0]}
-                            </Link>
-
-                        </NavbarMenuItem>
-                    ))}
-                    <SignOutButton>
-                        <Link
-                            className="w-full text-danger-500"
-                            href=""
-                        >
-                            Log out
-                        </Link>
-                    </SignOutButton>
-                </SignedIn>
-                <SignedOut>
-                    {getItemsShowWhileLoggedOut().map((item: Record<string, IMenuItemProps>, index: number) => (
-                        <NavbarMenuItem key={`${item[1]}-${index}`}>
-                            <Link
-                                color={
-                                    index === 2 ? "primary" : index === menuItems.length - 1 ? "danger" : "foreground"
-                                }
-                                className="w-full"
-                                href={item[(Object.keys(item) as string[])[0]].path}
-                            >
-                                {(Object.keys(item) as string[])[0]}
-                            </Link>
-
-                        </NavbarMenuItem>
-                    ))}
-                    <SignInButton>
-                        <Link
-                            className="w-full"
-                            href=""
-                        >
-                            Sign In
-                        </Link>
-                    </SignInButton>
-                    <SignUpButton>
-                        <Link
-                            className="w-full text-primary-500"
-                            href=""
-                        >
-                            Sign Up
-                        </Link>
-                    </SignUpButton>
-                </SignedOut>
+                <NavBarQuickMenuLinks loggedIn={loggedIn} menuItems={menuItems} ></NavBarQuickMenuLinks>
             </NavbarMenu>
         </NextNavBar>
     )
