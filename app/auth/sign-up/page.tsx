@@ -1,7 +1,7 @@
 "use client"
 import { z } from 'zod'
 import { zodResolver } from "@hookform/resolvers/zod"
-import {Input} from "@nextui-org/react";
+import {Input, Link} from "@nextui-org/react";
 import {
     Form,
     FormControl,
@@ -15,10 +15,12 @@ import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react';
 import { EyeOff, Eye } from 'lucide-react';
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
+import { signup } from '@/Actions/auth';
 
-const SignUpSchema = z.object({
+export const SignUpSchema = z.object({
     username: z.string(),
     email: z.string()
         .min(1, { message: "This field has to be filled."})
@@ -36,18 +38,13 @@ const SignUp = () => {
         },
     })
 
-    async function onSubmit(formData: z.infer<typeof SignUpSchema>) {
-        console.log(formData)
-        let { data, error } = await supabase.auth.signUp({
-            email: formData.email,
-            password: formData.password
-        })
-        console.log(data)
-        console.log(error)
+    async function onSubmit(values: z.infer<typeof SignUpSchema>) {
+        console.log(values)
+        signup(values)
     }
 
     return (
-        <div className="bg-default-50 shadow-lg shadow-default-50 rounded-xl w-96 h-3/6 justify-center grid grid-flow-row grid-rows-4">
+        <div className="bg-default-50 shadow-lg shadow-default-50 rounded-xl w-96 h-5/6 justify-center grid grid-flow-row grid-rows-4">
             <h1 className="font-bold text-center text-3xl my-3">Sign Up</h1>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-80 space-y-6">
@@ -88,6 +85,10 @@ const SignUp = () => {
                         )}
                     />
                     <Button type="submit" className='ml-20 w-1/2'>Create Account</Button>
+                    <p>
+                        Already have an account?
+                        <Link href="/auth/sign-in" className='ml-1'>Login</Link>
+                    </p>
                 </form>
             </Form>
         </div>

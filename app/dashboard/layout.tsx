@@ -1,18 +1,36 @@
 import { Footer } from "@/components/Navigation/Footer";
-import NavBar from "@/components/Navigation/NavBar";
-import SideBar from "@/components/Navigation/SideBar";
-import { currentUser } from "@clerk/nextjs"
+import SideBar, { ISideBarItemProps } from "@/components/Navigation/SideBar";
+import { createClient } from "@/lib/supabase/server"
+import { redirect } from "next/navigation";
 
 const DashboardLayout = async ({
     children,
 } : {
     children: React.ReactNode
 }) => {
-    const user = await currentUser()
+    const supabase = createClient()
+    const sideBarItems: ISideBarItemProps[] = [
+        {
+            title: "Home",
+            path: "/dashboard",
+            icon: "Home"
+        },
+        {
+            title: "Analytics",
+            path: "/dashboard/analytics",
+            icon: "BarChart3"
+        },
+
+    ]
+
+    const { data, error } = await supabase.auth.getUser()
+    if (error || !data?.user) {
+      redirect('/auth/sign-in')
+    }
 
     return (
         <div className="h-screen overflow-y-scroll scrollbar-hide">
-            <SideBar />
+            <SideBar MenuItems={sideBarItems} />
             <main className="ml-[230px]">{children}</main>
         </div>
     )

@@ -62,13 +62,13 @@ const NavBarQuickMenuLinks = ({ loggedIn, menuItems }: { loggedIn: boolean, menu
                 ))}
                 <Link
                     className="w-full"
-                    href="/sign-in"
+                    href="/auth/sign-in"
                 >
                     Sign In
                 </Link>
                 <Link
                     className="w-full text-primary-500"
-                    href="/sign-up"
+                    href="/auth/sign-up"
                 >
                     Sign Up
                 </Link>

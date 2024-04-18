@@ -26,10 +26,10 @@ const NavBarQuickLinks = ({loggedIn} : { loggedIn: boolean }) => {
         return (
             <>
                 <NavbarItem className="hidden lg:flex">
-                        <Link href="/sign-in">Login</Link>
+                        <Link href="/auth/sign-in">Login</Link>
                 </NavbarItem>
                 <NavbarItem>
-                        <Button as={Link} color="primary" href="/sign-up" variant="flat">
+                        <Button as={Link} color="primary" href="/auth/sign-up" variant="flat">
                             Sign Up
                         </Button>
                 </NavbarItem>

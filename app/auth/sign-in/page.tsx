@@ -1,7 +1,7 @@
 "use client"
 import { z } from 'zod'
 import { zodResolver } from "@hookform/resolvers/zod"
-import {Input} from "@nextui-org/react";
+import {Input, Link} from "@nextui-org/react";
 import {
     Form,
     FormControl,
@@ -13,20 +13,9 @@ import {
   } from "@/components/ui/form"
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
-import { useState } from 'react';
-import { EyeOff, Eye } from 'lucide-react';
-import { supabase } from '@/lib/supabase'
+import { login } from '@/Actions/auth';
 
-const UserSchema = z.object({
-    username: z.string(),
-    email: z.string().includes("@"),
-    firstName: z.string(),
-    lastName: z.string(),
-    password: z.string(),
-
-})
-
-const SignInSchema = z.object({
+export const SignInSchema = z.object({
     email: z.string()
         .min(1, { message: "This field has to be filled."})
         .email("This is not a valid email."),
@@ -35,6 +24,7 @@ const SignInSchema = z.object({
 })
 
 const SignIn = () => {
+
     const form = useForm<z.infer<typeof SignInSchema>>({
         resolver: zodResolver(SignInSchema),
         defaultValues: {
@@ -43,14 +33,9 @@ const SignIn = () => {
         },
     })
 
-    async function onSubmit(formData: z.infer<typeof SignInSchema>) {
-        console.log(formData)
-        let { data, error } = await supabase.auth.signInWithPassword({
-            email: formData.email,
-            password: formData.password,
-        })
-        console.log(data)
-        console.log(error)
+    async function onSubmit(values: z.infer<typeof SignInSchema>) {
+        console.log(values)
+        login(values)
     }
 
     return (
@@ -83,6 +68,10 @@ const SignIn = () => {
                         )}
                     />
                     <Button type="submit" className='ml-20 w-1/2'>Submit</Button>
+                    <p>
+                        Don't have an account?
+                        <Link href="/auth/sign-up" className='ml-1'>Register</Link>
+                    </p>
                 </form>
             </Form>
         </div>
