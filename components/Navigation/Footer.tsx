@@ -5,7 +5,7 @@ import { Divider, Listbox, ListboxItem } from "@nextui-org/react"
 export function Footer() {
 
     return (
-        <div className="w-full h-[200px] absolute bottom-0">
+        <div className="w-full h-[200px] bottom-0">
             <Divider />
             <div className="my-2 text-center">
                 <Listbox className="ml-[300px] w-[20%] " >

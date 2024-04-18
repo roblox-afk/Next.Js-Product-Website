@@ -17,8 +17,18 @@ const config = {
       center: true,
       padding: "2rem",
       screens: {
-        "2xl": "1400px",
+        'xs': '475px',
+        '2xl': {'max': '1535px'},
       },
+    },
+    screens: {
+      'phone': '320px',
+      'phone-lg': '540px',
+      '2xl': '1535px',
+      'xl': '1279px',
+      'lg': '1023px',
+      'md': '767px',
+      'sm': '639px'
     },
     transparent: 'transparent',
     current: 'currentColor',

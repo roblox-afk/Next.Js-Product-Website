@@ -1,7 +1,6 @@
 import { Footer } from "@/components/Navigation/Footer";
 import NavBar from "@/components/Navigation/NavBar";
 import { createClient } from "@/lib/supabase/server";
-import { currentUser } from "@clerk/nextjs"
 
 const MainLayout = async ({
     children,
@@ -17,9 +16,7 @@ const MainLayout = async ({
                 <NavBar loggedIn={user == null ? false : true } />
             </div>
             {children}
-            <div className="w-[100%] h-36 ">
-                <Footer />
-            </div>
+            <Footer />
         </div>
     )
 }

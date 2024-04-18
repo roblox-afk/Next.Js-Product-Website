@@ -9,7 +9,6 @@ import { SignUpSchema } from '@/app/auth/sign-up/page'
 import { z } from 'zod'
 
 export const login = async (formData: z.infer<typeof SignInSchema>) => {
-  console.log("In Server")
   const supabase = createClient()
 
   // type-casting here for convenience
