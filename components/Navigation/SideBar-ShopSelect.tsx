@@ -1,13 +1,10 @@
 import { Button } from "@/components/ui/button";
 import Image from 'next/image'
-import Link from "next/link";
-import { ChevronsUpDown } from "lucide-react"
-import { error } from "console";
-import { ReadonlyURLSearchParams, redirect, RedirectType, usePathname, useRouter, useSearchParams } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { ChevronsUpDown, PlusCircle } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -17,18 +14,40 @@ import {
 } from "@/components/ui/dialog"
 import profilePicturePlaceholder from '../../public/profilePicturePlaceholder.png'
 import { PopoverClose } from "@radix-ui/react-popover";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { useForm } from "react-hook-form";
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField, FormItem, FormControl, FormLabel, FormDescription, FormMessage } from "../ui/form";
+import {useForm} from 'react-hook-form';
+import { createStore } from "@/Actions/store";
+import { toast } from "sonner"
+import { Separator } from "../ui/separator";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-const FormSchema = z.object({
-    storeName: z.string().min(5)
+export const CreateStoreSchema = z.object({
+    storeName: z.string().superRefine((val, ctx) => {
+        if (val.length < 5) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.too_small,
+                minimum: 5,
+                type: "string",
+                inclusive: true,
+                message: "Must be 5 or more characters long"
+            })
+        }
+
+        if (val.length > 255) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.too_big,
+                maximum: 255,
+                type: "string",
+                inclusive: true,
+                message: "Must be less than 255 characters"
+            })
+        }
+    })
 })
 
 
@@ -37,15 +56,15 @@ const SideBarShopSelect = () => {
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const [title, setTitle] = useState()
+    const [open, setOpen] = useState(false)
     const [stores, setStores] = useState<any[] | null>()
     const [currentStore, setCurrentStore] = useState<any | null>()
 
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
+    const form = useForm<z.infer<typeof CreateStoreSchema>>({
+        resolver: zodResolver(CreateStoreSchema),
         defaultValues: {
-            storeName: "",
-        },
+            storeName: ""
+        }
     })
 
     useEffect(() => {
@@ -96,34 +115,41 @@ const SideBarShopSelect = () => {
         router.push(pathname + '?' + params.toString())
     }
 
-    function createNewStore(data: z.infer<typeof FormSchema>) {
-        console.log(data)
+    function createNewStore(data: z.infer<typeof CreateStoreSchema>) {
+        toast("Creating Store", {
+            description: "Store Name: " + data.storeName
+        })
+        createStore(data)
     }
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <Popover>
                 <PopoverTrigger asChild className="border-default-100">
                     <Button variant="outline" className="w-full mx-2 bg-default-50 h-10 rounded-lg flex justify-center items-center">
                         <Image src={profilePicturePlaceholder} alt="profile picture" className="rounded-lg flex absolute left-7" width={30} height={30} />
-                        <h5 className="flex absolute left-16 w-28 text-center">{currentStore?.title}</h5>
+                        <h5 className="absolute left-16 w-28 text-center text-ellipsis overflow-hidden">{currentStore?.title}</h5>
                         <ChevronsUpDown className="flex absolute right-6" height="20px" color="#504949" />
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className="xs:hidden sm:w-[100px] sm:block md:w-[224px] bg-default-50 border-default-100">
-                    <Button variant="ghost" className="w-full bg-default-100 border border-default-100 hover:border-default-200" onClick={() => {changeStore("test")}}>
-                        <Image src={profilePicturePlaceholder} alt="profile picture" className="rounded-lg flex absolute left-7" width={30} height={30} />
-                        <h5 className="flex absolute left-9">TwentyCharactersOnly</h5>
-                    </Button>
-                    
+                <PopoverContent className="xs:hidden sm:w-[100px] sm:block md:w-[210px] bg-default-50 border-default-100">
+                    {stores?.filter((store) => store.id != searchParams.get("id")).map((store) => {
+                        return (
+                            <Button variant="outline" key={store.id} className="w-full bg-default-50 border border-default-100 hover:border-default-200 mb-1" onClick={() => {changeStore(store.id)}}>
+                                <Image src={profilePicturePlaceholder} alt="profile picture" className="rounded-lg flex absolute left-7" width={30} height={30} />
+                                <h5 className="aboslute ml-8 text-ellipsis overflow-hidden">{store.title}</h5>
+                            </Button>
+                        )
+                    })}
+                    <Separator className="my-2 bg-neutral-700" />
                     <PopoverClose asChild>
                         <DialogTrigger asChild>
-                            <Button variant="ghost" className="w-full bg-default-100 border border-default-100 hover:border-default-200">
-                                <Image src={profilePicturePlaceholder} alt="profile picture" className="rounded-lg flex absolute left-7" width={30} height={30} />
+                            <Button variant="outline" className="w-full bg-default-50 border-default-100 text-default-500 hover:text-default-800">
+                                <PlusCircle className="mr-2" />
+                                Create New
                             </Button>
                         </DialogTrigger>
                     </PopoverClose>
-                    
                 </PopoverContent>
             </Popover>
 
@@ -143,17 +169,17 @@ const SideBarShopSelect = () => {
                                     name="storeName"
                                     render={({ field }) => (
                                         <FormItem>
-                                        <FormLabel>Name of Store</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                id="name"
-                                                title="Name of Store"
-                                                placeholder="Fancy Shopping Inc."
-                                                className="col-span-3 w-[2/4] border-neutral-600 text-neutral-500 font-semibold"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage className="font-semibold" />
+                                            <FormLabel>Name of Store</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    id="name"
+                                                    title="Name of Store"
+                                                    placeholder="Fancy Shopping Inc."
+                                                    className="col-span-3 w-[2/4] border-neutral-600 text-neutral-500 font-semibold focus-visible:ring-0 focus-visible:border-2"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage className="font-semibold text-red-400" />
                                         </FormItem>
                                     )}
                                 />

@@ -5,6 +5,7 @@ import { CirclePlus } from 'lucide-react';
 import profilePicturePlaceholder from "../../public/profilePicturePlaceholder.png"
 import Link from 'next/link';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import { DialogTrigger } from "@/components/ui/dialog";
 
 const StoreCard = ({title, logo, id, isCreateNew} : {title: string, logo: string, id: string, isCreateNew: boolean}) => {
     const pathname = usePathname()
@@ -19,9 +20,11 @@ const StoreCard = ({title, logo, id, isCreateNew} : {title: string, logo: string
 
     if (isCreateNew) {
         return (
-            <Button className="bg-neutral-900 shadow-lg border border-neutral-800 hover:bg-neutral-800  hover:shadow-neutral-700 rounded-3xl w-48 h-52 justify-center flex flex-col items-center">
-                <CirclePlus />
-            </Button>
+            <DialogTrigger asChild>
+                <Button className="bg-neutral-900 border border-neutral-800 hover:bg-neutral-900 text-default-200 hover:text-default-500 rounded-3xl w-48 h-52 justify-center flex flex-col items-center">
+                    <CirclePlus />
+                </Button>
+            </DialogTrigger>
         )
     }
 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "@/components/ui/sonner"
 import { NextUIProviders } from "@/components/providers/nextUi-provider";
 import { dark } from "@clerk/themes";
 
@@ -18,7 +18,8 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
         <body>
           <NextUIProviders>
-            {children}
+            <main>{children}</main>
+            <Toaster />
           </NextUIProviders>
         </body>
     </html>
