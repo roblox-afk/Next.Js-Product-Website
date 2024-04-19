@@ -1,6 +1,16 @@
-import { Button, NavbarItem } from "@nextui-org/react";
+import { NavbarItem, Button as NextUiButton } from "@nextui-org/react";
+import { Button } from "@/components/ui/button";
 import Image from 'next/image'
 import Link from "next/link";
+import { Settings, LogOut } from "lucide-react"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import profilePicturePlaceholder from "@/public/profilePicturePlaceholder.png"
+import { PopoverClose } from "@radix-ui/react-popover";
+import { logout } from "@/Actions/auth";
 
 const NavBarQuickLinks = ({loggedIn} : { loggedIn: boolean }) => {
 
@@ -8,17 +18,36 @@ const NavBarQuickLinks = ({loggedIn} : { loggedIn: boolean }) => {
         return (
             <>
                 <NavbarItem>
-                    <Button as={Link} color="primary" href="/dashboard" variant="flat">
+                    <NextUiButton as={Link} color="primary" href="/dashboard" variant="flat">
                         Dashboard
-                    </Button>
+                    </NextUiButton>
                 </NavbarItem>
                 <NavbarItem>
-                    <Button>
-                        <Image
-                            src=""
-                            alt="Profile picture"
-                        />
-                    </Button>
+                    <Popover>
+                        <PopoverTrigger>
+                            <Image
+                                src={profilePicturePlaceholder}
+                                alt="profile picture"
+                                width={50}
+                                height={50}
+                                className="rounded-full"
+                            />
+                        </PopoverTrigger>
+                        <PopoverContent className="bg-neutral-950 border-neutral-800 w-48">
+                            <PopoverClose asChild>
+                                <Button asChild className="w-full bg-black">
+                                    <Link href="/settings/profile" className="w-full bg-transparent hover:bg-neutral-900 font-sans">
+                                        <Settings className="mr-1 w-10 h-10" /> Manage Account
+                                    </Link>
+                                </Button>
+                            </PopoverClose>
+                            <PopoverClose asChild>
+                                <Button className="w-full bg-transparent hover:bg-neutral-900 font-sans" onClick={logout}>
+                                    <LogOut className="mr-1 w-4 h-4" /> Log Out
+                                </Button>
+                            </PopoverClose>
+                        </PopoverContent>
+                    </Popover>
                 </NavbarItem>
             </>
         )
@@ -29,9 +58,9 @@ const NavBarQuickLinks = ({loggedIn} : { loggedIn: boolean }) => {
                         <Link href="/auth/sign-in">Login</Link>
                 </NavbarItem>
                 <NavbarItem>
-                        <Button as={Link} color="primary" href="/auth/sign-up" variant="flat">
+                        <NextUiButton as={Link} color="primary" href="/auth/sign-up" variant="flat">
                             Sign Up
-                        </Button>
+                        </NextUiButton>
                 </NavbarItem>
             </>
         )

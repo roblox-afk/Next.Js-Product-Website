@@ -8,8 +8,8 @@ interface PieCanvasData {
     color: string
 }
 
-const MyResponsivePieCanvas = ({ data } : { data: PieCanvasData[] }) => (
-    return <ResponsivePieCanvas
+const MyResponsivePieCanvas = ({ data } : { data: PieCanvasData[] }) => {
+    return (<ResponsivePieCanvas
         data={data}
         margin={{ top: 40, right: 200, bottom: 40, left: 80 }}
         innerRadius={0.5}
@@ -119,9 +119,11 @@ const MyResponsivePieCanvas = ({ data } : { data: PieCanvasData[] }) => (
                 symbolShape: 'circle'
             }
         ]}
-    />
-)
+    />)
+}
 
 export default function ProductProfitsOverview() {
-    return ()
+    return (
+        <h1>tst</h1>
+    )
 }

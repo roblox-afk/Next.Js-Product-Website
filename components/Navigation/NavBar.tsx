@@ -4,8 +4,6 @@ import { Button, NavbarBrand, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuI
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import {dark} from "@clerk/themes";
-import { IsLoggedIn } from "@/Actions/isLoggedIn"
-import { supabase } from "@/lib/supabase"
 import NavBarQuickLinks from "./NavBar-QuickLinks"
 import NavBarQuickMenuLinks from "./NavBar-QuickMenuLinks"
 

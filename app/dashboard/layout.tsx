@@ -33,7 +33,7 @@ const DashboardLayout = ({
         async function fetchUser() {
             const {data, error} = await supabase.auth.getUser()
             if (error || !data.user) {
-                redirect('/auth/sign-in')
+                router.push('/auth/sign-in')
             }
         }
         async function hasAccess() {

@@ -3,9 +3,13 @@ import { Button } from "./ui/button";
 import StoreCard from './Cards/StoreCard';
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { set } from "zod";
+import { User } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 
-export function SelectStore() {
+export function SelectStore() {   
     const supabase = createClient()
+    const router = useRouter()
     const [stores, setStores] = useState<any[] | null>()
 
     useEffect(() => {

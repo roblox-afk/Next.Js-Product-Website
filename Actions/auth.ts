@@ -8,6 +8,19 @@ import { SignInSchema } from '@/app/auth/sign-in/page'
 import { SignUpSchema } from '@/app/auth/sign-up/page'
 import { z } from 'zod'
 
+export const logout = async () => {
+  const supabase = createClient()
+
+  const { error } = await supabase.auth.signOut()
+
+  if (error) {
+    redirect("/403")
+  }
+
+  revalidatePath('/', 'layout')
+  redirect('/')
+}
+
 export const login = async (formData: z.infer<typeof SignInSchema>) => {
   const supabase = createClient()
 
@@ -21,7 +34,7 @@ export const login = async (formData: z.infer<typeof SignInSchema>) => {
   const { error } = await supabase.auth.signInWithPassword(data)
 
   if (error) {
-    redirect('/error')
+    redirect('/403')
   }
 
   revalidatePath('/', 'layout')
@@ -41,7 +54,7 @@ export async function signup(formData: z.infer<typeof SignUpSchema>) {
   const { error } = await supabase.auth.signUp(data)
 
   if (error) {
-    redirect('/error')
+    redirect('/403')
   }
 
   revalidatePath('/', 'layout')

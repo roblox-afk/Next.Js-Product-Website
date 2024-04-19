@@ -69,7 +69,7 @@ const SignIn = () => {
                     />
                     <Button type="submit" className='ml-20 w-1/2'>Submit</Button>
                     <p>
-                        Don't have an account?
+                        Don&apos;t have an account
                         <Link href="/auth/sign-up" className='ml-1'>Register</Link>
                     </p>
                 </form>
