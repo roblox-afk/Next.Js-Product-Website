@@ -13,15 +13,7 @@ import {
   } from "@/components/ui/form"
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
-import { login } from '@/Actions/auth';
-
-export const SignInSchema = z.object({
-    email: z.string()
-        .min(1, { message: "This field has to be filled."})
-        .email("This is not a valid email."),
-    password: z.string().min(6)
-
-})
+import { login, SignInSchema } from '@/Actions/auth';
 
 const SignIn = () => {
 

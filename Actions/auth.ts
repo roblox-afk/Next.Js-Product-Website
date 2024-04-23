@@ -4,9 +4,24 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { createClient } from '@/lib/supabase/server'
-import { SignInSchema } from '@/app/auth/sign-in/page'
-import { SignUpSchema } from '@/app/auth/sign-up/page'
 import { z } from 'zod'
+
+export const SignInSchema = z.object({
+  email: z.string()
+      .min(1, { message: "This field has to be filled."})
+      .email("This is not a valid email."),
+  password: z.string().min(6)
+
+})
+
+export const SignUpSchema = z.object({
+  username: z.string(),
+  email: z.string()
+      .min(1, { message: "This field has to be filled."})
+      .email("This is not a valid email."),
+  password: z.string().min(6)
+
+})
 
 export const logout = async () => {
   const supabase = createClient()

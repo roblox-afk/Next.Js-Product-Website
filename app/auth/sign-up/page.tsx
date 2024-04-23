@@ -10,7 +10,7 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-  } from "@/components/ui/form"
+} from "@/components/ui/form"
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react';
@@ -18,16 +18,7 @@ import { EyeOff, Eye } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { signup } from '@/Actions/auth';
-
-export const SignUpSchema = z.object({
-    username: z.string(),
-    email: z.string()
-        .min(1, { message: "This field has to be filled."})
-        .email("This is not a valid email."),
-    password: z.string().min(6)
-
-})
+import { signup, SignUpSchema } from '@/Actions/auth';
 
 const SignUp = () => {
     const form = useForm<z.infer<typeof SignUpSchema>>({
