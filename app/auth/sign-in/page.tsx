@@ -10,10 +10,11 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-  } from "@/components/ui/form"
+} from "@/components/ui/form"
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
-import { login, SignInSchema } from '@/Actions/auth';
+import { login } from '@/Actions/auth';
+import { SignInSchema } from '@/zodSchema';
 
 const SignIn = () => {
 
@@ -26,7 +27,6 @@ const SignIn = () => {
     })
 
     async function onSubmit(values: z.infer<typeof SignInSchema>) {
-        console.log(values)
         login(values)
     }
 

@@ -18,19 +18,20 @@ import { EyeOff, Eye } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { signup, SignUpSchema } from '@/Actions/auth';
+import { signup } from '@/Actions/auth';
+import { SignUpSchema } from '@/zodSchema';
 
 const SignUp = () => {
     const form = useForm<z.infer<typeof SignUpSchema>>({
         resolver: zodResolver(SignUpSchema),
         defaultValues: {
+            username: "",
             email: "",
             password: "",
         },
     })
 
     async function onSubmit(values: z.infer<typeof SignUpSchema>) {
-        console.log(values)
         signup(values)
     }
 

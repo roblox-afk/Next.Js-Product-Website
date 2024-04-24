@@ -5,7 +5,7 @@ import { SelectStore } from "@/components/Select-Store";
 import { createClient } from "@/lib/supabase/client"
 import { UserResponse } from "@supabase/supabase-js";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 const DashboardLayout = ({
     children
@@ -37,11 +37,13 @@ const DashboardLayout = ({
             }
         }
         async function hasAccess() {
+            const userId = (await supabase.auth.getUser()).data.user?.id
             const searchParamId = searchParams.get("id")
             let access = false
             let { data: storeIds, error } = await supabase
                 .from('stores')
                 .select('id')
+                .eq('user_id', userId)
 
             if (searchParamId == null) return null
 

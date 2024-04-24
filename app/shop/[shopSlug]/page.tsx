@@ -1,6 +1,7 @@
 import { findStoreWithSlug, storeData } from "@/Actions/store";
 import { DefaultShopLayout } from "@/components/Shop/layouts/default";
 import { ModernShopLayout } from "@/components/Shop/layouts/modern";
+import { LockedShop } from "@/components/Shop/Locked";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { ReactElement, useEffect, useState } from "react";
@@ -18,10 +19,14 @@ const ShopPage = async ({ params } : { params: {shopSlug: string} }) => {
         .eq('slug', params.shopSlug)
         .single()
 
-    console.log(data)
+    if (data == null) redirect("/")
 
-    return (
-        <h1>{data?.title}</h1>
-    )
+    if (data.published) {
+        return (
+            <ModernShopLayout />
+        )
+    } else {
+        return <LockedShop />
+    }
 }
 export default ShopPage;

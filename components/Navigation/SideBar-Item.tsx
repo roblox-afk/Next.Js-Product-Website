@@ -7,7 +7,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const SideBarItem = ({ iconName, title, path, currentPath } : { iconName: string, title: string, path: string, currentPath: string }) => {
-    const LucideIcon = icons[iconName]
+    const LucideIcon = (icons as any)[iconName]
     const searchParams = useSearchParams()
 
 

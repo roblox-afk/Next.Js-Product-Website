@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog"
 import { Form, FormField, FormItem, FormControl, FormLabel, FormMessage, FormDescription } from "../ui/form";
 import { Button } from '../ui/button';
-import { CircleCheck, TriangleAlert } from 'lucide-react';
+import { CircleCheck, Loader2, TriangleAlert, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { createStore } from '@/Actions/store';
 import { Dispatch, SetStateAction, useState } from 'react';
@@ -16,8 +16,12 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '../ui/input';
+import { UploadDropzone } from '@/lib/uploadthing';
+import Image from 'next/image';
+import axios from "axios"
 
 export const CreateStoreSchema = z.object({
+    storeLogo: z.string(),
     storeName: z.string().superRefine((val, ctx) => {
         if (val.length < 5) {
             ctx.addIssue({
@@ -60,25 +64,53 @@ export const CreateStoreSchema = z.object({
             })
         }
     })
-}).required()
+})
 
 const CreateStoreContent = ({setOpen} : {setOpen: Dispatch<SetStateAction<boolean>> }) => {
     const router = useRouter()
     const [slug, setSlug] = useState("fancyshopping")
+    const [logo, setLogo] = useState("")
+    const [logoIsDeleting, setLogoIsDeleting] = useState(false)
 
     const form = useForm<z.infer<typeof CreateStoreSchema>>({
         resolver: zodResolver(CreateStoreSchema),
         defaultValues: {
             storeName: "",
-            storeSlug: ""
+            storeSlug: "",
+            storeLogo: ""
         }
     })
 
+    function handleLogoDelete(image: string) {
+        setLogoIsDeleting(true)
+        const imageKey = image.substring(image.lastIndexOf('/') + 1)
+
+        axios.post("/api/uploadthing/delete", {imageKey}).then((res) => {
+            if(res.data.success) {
+                setLogo("")
+                toast("Deleted Logo", {
+                    description: "The logo that you submited has been deleted"
+                })
+            }
+        }).catch(() => {
+            toast("Failed: Deleting logo", {
+                description: "There has been an error while deleting your logo"
+            })
+        }).finally(() => {
+            setLogoIsDeleting(false)
+        })
+    }
+
     function createNewStore(data: z.infer<typeof CreateStoreSchema>) {
-        if (createStore(data) != null) {
+        const formData = data
+        if (logo.length < 1) {
+            return form.setError("storeLogo", { type: "custom", message: "A logo is required." })
+        }
+        formData.storeLogo = logo
+        if (createStore(formData) != null) {
             toast("Unable to create store", {
                 icon: <TriangleAlert fill="#ec9909" strokeWidth={2} absoluteStrokeWidth stroke="#ffffff" className="group-data-[type=warning]" />,
-                description: "There seems to be a store with that name!",
+                description: "There seems to be a store with that slug!",
             })
         } else {
             toast("Store created", {
@@ -87,6 +119,7 @@ const CreateStoreContent = ({setOpen} : {setOpen: Dispatch<SetStateAction<boolea
             })
         }
         setOpen(false)
+        form.reset()
     }
 
     return (
@@ -101,6 +134,36 @@ const CreateStoreContent = ({setOpen} : {setOpen: Dispatch<SetStateAction<boolea
                 <form onSubmit={form.handleSubmit(createNewStore)} className="">
                     <div className="grid gap-4 py-4">
                         <div className="grid grid-cols-1 items-center gap-4">
+                            <FormField
+                                control={form.control}
+                                name="storeLogo"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormControl className=''>
+                                            {logo ?
+                                            <>
+                                                <Button onClick={() => handleLogoDelete(logo)} className='relative top-0 right-[-12px]' type='button' variant="ghost" size="icon">{logoIsDeleting ? <Loader2 /> : <XCircle /> }</Button>
+                                                <Image src={logo} alt="logo of store" width={75} height={75} />
+                                            </> :
+                                            <>
+                                                <UploadDropzone
+                                                    endpoint='imageUploader'
+                                                    onClientUploadComplete={(res) => {
+                                                        setLogo(res[0].url)
+                                                    }}
+                                                    onUploadError={(error: Error) => {
+                                                        toast("Eror while uploading file", {
+                                                            description: error.message
+                                                        })
+                                                    }}
+                                                />
+                                            </>
+                                            }
+                                        </FormControl>
+                                        <FormMessage className="font-semibold text-red-400" />
+                                    </FormItem>
+                                )}
+                            />
                             <FormField
                                 control={form.control}
                                 name="storeName"

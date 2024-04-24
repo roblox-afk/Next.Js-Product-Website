@@ -1,7 +1,8 @@
 import type { Config } from "tailwindcss"
 import { nextui } from "@nextui-org/react"
+import { withUt } from "uploadthing/tw";
 
-const config = {
+const config = withUt({
   darkMode: "class",
   content: [
     './pages/**/*.{ts,tsx}',
@@ -220,6 +221,6 @@ const config = {
       // ... custom themes
     },
   })],
-} satisfies Config
+}) satisfies Config
 
 export default config

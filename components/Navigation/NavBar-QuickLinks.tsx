@@ -14,6 +14,10 @@ import { logout } from "@/Actions/auth";
 
 const NavBarQuickLinks = ({loggedIn} : { loggedIn: boolean }) => {
 
+    function onLogoutClicked() {
+        logout()
+    }
+
     if (loggedIn) {
         return (
             <>
@@ -42,7 +46,7 @@ const NavBarQuickLinks = ({loggedIn} : { loggedIn: boolean }) => {
                                 </Button>
                             </PopoverClose>
                             <PopoverClose asChild>
-                                <Button className="w-full bg-transparent hover:bg-neutral-900 font-sans" onClick={logout}>
+                                <Button className="w-full bg-transparent hover:bg-neutral-900 font-sans" onClick={onLogoutClicked}>
                                     <LogOut className="mr-1 w-4 h-4" /> Log Out
                                 </Button>
                             </PopoverClose>

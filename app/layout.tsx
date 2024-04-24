@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner"
 import { NextUIProviders } from "@/components/providers/nextUi-provider";
-import { dark } from "@clerk/themes";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "@/app/api/uploadthing/core";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,12 +22,11 @@ export default function RootLayout({
           <NextUIProviders>
             <main>{children}</main>
             <Toaster />
+            <NextSSRPlugin
+              routerConfig={extractRouterConfig(ourFileRouter)}
+            />
           </NextUIProviders>
         </body>
     </html>
   );
 }
-
-{/* <ClerkProvider appearance={{
-  baseTheme: dark
-}}> */}

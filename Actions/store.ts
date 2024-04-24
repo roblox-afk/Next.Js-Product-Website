@@ -10,7 +10,8 @@ export type storeData = {
     id: string,
     user_id: string,
     title: string,
-    slug: string, 
+    slug: string,
+    logoUrl: string,
     products: JSON,
     published: boolean
 }
@@ -20,7 +21,7 @@ export const createStore = async (formData: z.infer<typeof CreateStoreSchema>) =
     const { data, error } : {data: storeData[] | null, error: any} = await supabase
         .from('stores')
         .insert([
-            { title: formData.storeName, slug: formData.storeSlug },
+            { title: formData.storeName, slug: formData.storeSlug, logoUrl: formData.storeLogo },
         ])
         .select()
     console.log(data)

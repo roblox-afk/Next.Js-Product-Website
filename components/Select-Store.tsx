@@ -15,9 +15,11 @@ export function SelectStore() {
 
     useEffect(() => {
         async function fetchStores() {
+            const userId = (await supabase.auth.getUser()).data.user?.id
             let { data: stores, error } = await supabase
                 .from('stores')
                 .select('*')
+                .eq('user_id', userId)
             setStores(stores)
         }
         fetchStores()
@@ -31,7 +33,7 @@ export function SelectStore() {
                 <div className="my-10 mx-20 grid grid-flow-col auto-cols-max gap-10">
                     {stores?.map(function(data) {
                         return (
-                            <StoreCard key={data.title} title={data.title} id={data.id} logo="" isCreateNew={false} />
+                            <StoreCard key={data.title} title={data.title} id={data.id} logo={data.logoUrl} isCreateNew={false} />
                         )
                     })}
                     <StoreCard key="createNew" title="createNew" id="createNew" logo="" isCreateNew={true} />
