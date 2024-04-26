@@ -19,14 +19,12 @@ const ShopPage = async ({ params } : { params: {shopSlug: string} }) => {
         .eq('slug', params.shopSlug)
         .single()
 
-    if (data == null) redirect("/")
+    if (data == null) return null
 
-    if (data.published) {
-        return (
-            <ModernShopLayout />
-        )
-    } else {
-        return <LockedShop />
-    }
+    return (
+        <div>
+
+        </div>
+    )
 }
 export default ShopPage;

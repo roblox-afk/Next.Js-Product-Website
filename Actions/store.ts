@@ -6,14 +6,47 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 
+export type StoreCollection = {
+    id: string,
+    coverUrl: string | null,
+    title: string,
+    products: string[] | null,
+}
+
+
+export type StoreCategory = {
+    id: string,
+    title: string,
+    products: string[] | null,
+    collections: string[] | null,
+}
+
+export type StoreProduct = {
+    id: string,
+    user_id: string,
+    store_id: string
+    title: string,
+    description: string,
+    price: number,
+    isFeatured: boolean,
+    category: string | null,
+    collections: string[] | null,
+    media: [
+        {
+            url: string,
+            isVideo: boolean,
+        }
+    ] | null
+}
+
+
 export type storeData = {
     id: string,
     user_id: string,
     title: string,
     slug: string,
     logoUrl: string,
-    products: JSON,
-    published: boolean
+    published: boolean,
 }
 
 export const createStore = async (formData: z.infer<typeof CreateStoreSchema>) => {
