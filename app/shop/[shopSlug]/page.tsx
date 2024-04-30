@@ -3,12 +3,8 @@ import { DefaultShopLayout } from "@/components/Shop/layouts/default";
 import { ModernShopLayout } from "@/components/Shop/layouts/modern";
 import { LockedShop } from "@/components/Shop/Locked";
 import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from 'next/navigation';
 import { ReactElement, useEffect, useState } from "react";
-
-async function handleVisit(id:string) {
-
-}
 
 const ShopPage = async ({ params } : { params: {shopSlug: string} }) => {
     const supabase = createClient()
@@ -22,9 +18,8 @@ const ShopPage = async ({ params } : { params: {shopSlug: string} }) => {
     if (data == null) return null
 
     return (
-        <div>
-
-        </div>
+        <>
+        </>
     )
 }
 export default ShopPage;

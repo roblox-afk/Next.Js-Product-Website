@@ -69,8 +69,6 @@ const SideBarShopSelect = () => {
     }, [pathname, supabase, searchParams, router])
 
     function changeStore(id: string) {
-        // TODO: Add safety to make sure store exsist's
-        // TODO: Add safety to make sure user has access to store
         const params = new URLSearchParams(searchParams.toString())
         params.set("id", id)
         router.push(pathname + '?' + params.toString())

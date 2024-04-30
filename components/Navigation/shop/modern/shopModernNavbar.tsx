@@ -18,12 +18,11 @@ import { View } from "lucide-react"
 import { storeData } from '@/Actions/store';
 
 export function ModernShopNavBar({ data, categories, collections, products }: { data: storeData, categories: StoreCategory[] | null, collections: StoreCollection[], products: StoreProduct[] | null }) {
-    // TODO: Change logo link to dynamic href link
     console.log(products)
     console.log(categories)
     console.log(collections)
     return (
-        <div className="flex justify-center items-center w-full bg-default-50 h-20">
+        <div className="flex absolute justify-center items-center bg-default-50 h-20 w-full">
             <Link href={"/shop/" + data.slug} className="absolute left-40 bg-red-400">
                 <Image src={data.logoUrl} alt="logo of store" width={75} height={75} />
             </Link>
