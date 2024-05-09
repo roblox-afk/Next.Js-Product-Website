@@ -9,10 +9,8 @@ import { SignInSchema, SignUpSchema } from '@/zodSchema'
 
 export const logout = async () => {
   const supabase = createClient()
-  console.log("Logout Started")
 
   const { error } = await supabase.auth.signOut()
-  console.log("Logout")
 
   if (error) {
     redirect("/403")

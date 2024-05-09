@@ -1,18 +1,20 @@
 'use server'
 
 import { CreateStoreSchema } from '@/components/Cards/CreateStoreContent'
+import { CreateProductSchema } from '@/app/@modal/newProduct/NewProductContent'
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { env } from 'process'
 import { z } from 'zod'
 
 export type StoreCollection = {
     id: string,
     coverUrl: string | null,
     title: string,
+    category: string,
     products: string[] | null,
 }
-
 
 export type StoreCategory = {
     id: string,
@@ -31,6 +33,7 @@ export type StoreProduct = {
     isFeatured: boolean,
     category: string | null,
     collections: string[] | null,
+    stripe_product_id: string,
     media: [
         {
             url: string,
@@ -38,7 +41,6 @@ export type StoreProduct = {
         }
     ] | null
 }
-
 
 export type storeData = {
     id: string,
@@ -49,6 +51,8 @@ export type storeData = {
     published: boolean,
 }
 
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+
 export const createStore = async (formData: z.infer<typeof CreateStoreSchema>) => {
     const supabase = createClient()
     const { data, error } : {data: storeData[] | null, error: any} = await supabase
@@ -57,7 +61,6 @@ export const createStore = async (formData: z.infer<typeof CreateStoreSchema>) =
             { title: formData.storeName, slug: formData.storeSlug, logoUrl: formData.storeLogo },
         ])
         .select()
-    console.log(data)
     revalidatePath("/dashboard", "layout")
     if (data == null) {
         return error
@@ -73,11 +76,61 @@ export const findStoreWithSlug = async (storeSlug: string) => {
         .select('*')
         .eq('slug', storeSlug)
         .single().then()
-    console.log(data)
     if (data == null){
         redirect("/")
         return null
     }
 
     return data
+}
+
+export const createProduct = async (formData: z.infer<typeof CreateProductSchema>, shopId: string) => {
+    const supabase = createClient()
+    console.log(formData)
+    const newProduct = await stripe.products.create({
+        name: formData.title,
+        default_price_data: {
+            currency: "USD",
+            unit_amount_decimal: formData.price
+        }
+    })
+    if (newProduct == null) return
+    console.log(newProduct)
+    const {data: newProductSupabase, error} = await supabase
+        .from('products')
+        .insert([
+            { category: formData.category, stripe_product_id: newProduct.id, price: formData.price, title: formData.title, store_id: shopId, description: "" }
+        ])
+        .select('*')
+        .single()
+    if (formData.category != null) {
+        const {data: categoryData, error: categoryError} = await supabase
+            .from('categories')
+            .select('*')
+            .eq('id', formData.category)
+            .single()
+        if (categoryData != null) {
+            const {data} = await supabase
+                .from('categories')
+                .update({ products: [... newProductSupabase.id] })
+                .eq('id', formData.category)
+        }
+    }
+    console.log(newProductSupabase)
+    if (newProductSupabase == null) return
+
+    revalidatePath("/dashboard/"+shopId+"/products", "page")
+    return newProductSupabase
+}
+
+export const deleteProduct = async (product: StoreProduct) => {
+    const supabase = createClient()
+    console.log(product)
+    const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', product.id)
+    console.log(error)
+    const deletedProduct = await stripe.products.update(product.stripe_product_id, {active: false})
+    revalidatePath("/dashboard/"+product.store_id+"/products", "page")
 }

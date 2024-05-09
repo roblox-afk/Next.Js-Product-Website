@@ -18,9 +18,6 @@ import { View } from "lucide-react"
 import { storeData } from '@/Actions/store';
 
 export function ModernShopNavBar({ data, categories, collections, products }: { data: storeData, categories: StoreCategory[] | null, collections: StoreCollection[], products: StoreProduct[] | null }) {
-    console.log(products)
-    console.log(categories)
-    console.log(collections)
     return (
         <div className="flex absolute justify-center items-center bg-default-50 h-20 w-full">
             <Link href={"/shop/" + data.slug} className="absolute left-40 bg-red-400">
@@ -66,9 +63,9 @@ export function ModernShopNavBar({ data, categories, collections, products }: { 
                             <NavigationMenuTrigger className="bg-default-100">{category.title}</NavigationMenuTrigger>
                             <NavigationMenuContent className="bg-default-100">
                                 <ul className="grid w-[300px] gap-3 p-4 md:w-[350px] md:grid-cols-2 lg:w-[400px]">
-                                    {collections.length > 2  ?
+                                    {collections.length > 0  ?
                                         <>
-                                            {collections?.filter((collection) => category.collections?.includes(collection.id)).map((collection) => {
+                                            {collections?.filter((collection) => collection.category == category.id).map((collection) => {
                                                 return (
                                                     <ListItem
                                                         key={collection.id}
@@ -80,9 +77,7 @@ export function ModernShopNavBar({ data, categories, collections, products }: { 
                                             })}
                                         </> :
                                         <>
-                                            {products?.filter((product) => category.products?.includes(product.id)).map((product) => {
-                                                console.log(product)
-                                                console.log(category)
+                                            {products?.filter((product) => product.category == category.id).map((product) => {
                                                 return (
                                                     <ListItem
                                                         key={product.id}

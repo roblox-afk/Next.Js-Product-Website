@@ -107,7 +107,7 @@ const CreateStoreContent = ({setOpen} : {setOpen: Dispatch<SetStateAction<boolea
             return form.setError("storeLogo", { type: "custom", message: "A logo is required." })
         }
         formData.storeLogo = logo
-        if (createStore(formData) != null) {
+        if (createStore(formData) == null) {
             toast("Unable to create store", {
                 icon: <TriangleAlert fill="#ec9909" strokeWidth={2} absoluteStrokeWidth stroke="#ffffff" className="group-data-[type=warning]" />,
                 description: "There seems to be a store with that slug!",

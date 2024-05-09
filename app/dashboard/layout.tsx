@@ -1,77 +1,29 @@
-"use client"
 import { Footer } from "@/components/Navigation/Footer";
 import SideBar, { ISideBarItemProps } from "@/components/Navigation/SideBar";
 import { SelectStore } from "@/components/Select-Store";
-import { createClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/server"
 import { UserResponse } from "@supabase/supabase-js";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import { redirect } from "next/navigation";
 
-const DashboardLayout = ({
-    children
+const DashboardLayout = async ({
+    children,
 } : {
     children: React.ReactNode
 }) => {
     const supabase = createClient()
-    const searchParams = useSearchParams()
-    const router = useRouter()
-    const sideBarItems: ISideBarItemProps[] = [
-        {
-            title: "Home",
-            path: "/dashboard",
-            icon: "Home"
-        },
-        {
-            title: "Analytics",
-            path: "/dashboard/analytics",
-            icon: "BarChart3"
-        },
+    const {data: userData, error: userError} = await supabase.auth.getUser()
 
-    ]
-
-    useEffect(() => {
-        async function fetchUser() {
-            const {data, error} = await supabase.auth.getUser()
-            if (error || !data.user) {
-                router.push('/auth/sign-in')
-            }
-        }
-        async function hasAccess() {
-            const userId = (await supabase.auth.getUser()).data.user?.id
-            const searchParamId = searchParams.get("id")
-            let access = false
-            let { data: storeIds, error } = await supabase
-                .from('stores')
-                .select('id')
-                .eq('user_id', userId)
-
-            if (searchParamId == null) return null
-
-            storeIds?.forEach((x: any) => {
-                if (x.id == searchParamId) access = true
-            });
-
-            if (access == false) {
-                router.push("/dashboard")
-            }
-            return access
-        }
-        fetchUser()
-        hasAccess()
-    }, [supabase, router, searchParams])
-
-    if(searchParams.get("id") == null) {
-        return (
-            <SelectStore />
-        )
+    if (userError || !userData.user) {
+        redirect('/auth/sign-in')
     }
 
     return (
-        <div className="h-screen overflow-y-scroll scrollbar-hide">
-            <SideBar MenuItems={sideBarItems} />
-            <main className="sm:ml-[100px] md:ml-[230px]">{children}</main>
-        </div>
+        <>
+            {children}
+        </>
     )
+
 }
 
 export default DashboardLayout

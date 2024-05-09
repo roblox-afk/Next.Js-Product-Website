@@ -1,3 +1,4 @@
+"use client"
 import NavBar from "./Navigation/NavBar";
 import {
     Dialog

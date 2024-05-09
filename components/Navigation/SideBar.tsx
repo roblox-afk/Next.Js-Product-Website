@@ -12,18 +12,19 @@ import SideBarShopSelect from "./SideBar-ShopSelect";
 export interface ISideBarItemProps {
     title: string,
     icon: string,
-    path: string,
+    path: string
 }
 
 export default function SideBar({MenuItems}:{MenuItems: ISideBarItemProps[]}) {
     const pathname = usePathname()
+    const id = pathname.split("/")[2]
 
     return (
         <>
             <aside className="phone:hidden sm:w-[100px] sm:block md:w-[230px] max-w-xs h-screen fixed left-0 top-0 border-r border-neutral-900">
                 <div className="h-full px-3 py-4">
                     <div className="flex justify-center">
-                        <SideBarShopSelect />
+                        <SideBarShopSelect shopId={id} />
                     </div>
                     <Separator className="mt-5 bg-neutral-700" />
                     <div className="mt-5"><div className="bg-default-200"></div>

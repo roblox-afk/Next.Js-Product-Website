@@ -1,16 +1,28 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    async redirects() {
+        return [
+            {
+                source: '/dashboard/:slug/product',
+                destination: '/dashboard/:slug/products',
+                permanent: true
+            }
+        ]
+    },
     images : {
         dangerouslyAllowSVG: true,
-        domains: [
-            "placehold.co"
-        ],
         remotePatterns: [
             {
                 protocol:   'https',
                 hostname:   '*',
                 port:   '',
                 pathname:   '/**'
+            },
+            {
+                protocol: 'https',
+                hostname: 'placehold.co',
+                port: '',
+                pathname: '/**'
             }
         ]
     },
