@@ -57,7 +57,13 @@ const Toolbar = ({ editor }: { editor: Editor }) => {
     )
 }
 
-export const ProductDescription = () => {
+export const ProductDescription = ({
+    description,
+    onChange
+}: {
+    description: string,
+    onChange: (richText: string) => void
+}) => {
     const editor = useEditor({
         editorProps: {
             attributes: {
@@ -68,7 +74,11 @@ export const ProductDescription = () => {
         extensions: [
             Document, Paragraph, Text, Heading, StarterKit, Underline
         ],
-        content: ""
+        content: description,
+        onUpdate({ editor }) {
+            onChange(editor.getHTML())
+            console.log(editor.getHTML())
+        }
     })
 
     return (

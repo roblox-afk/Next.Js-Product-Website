@@ -29,7 +29,7 @@ export const ourFileRouter = {
             // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
             return { uploadedBy: metadata.userId, url: file.url };
         }),
-    productImagesUploader: f({ image: { maxFileSize: "64MB", maxFileCount: 10 } })
+    productImagesUploader: f({ image: { maxFileSize: "64MB", maxFileCount: 1 } })
         // Set permissions and file types for this FileRoute
         .middleware(async ({ req }) => {
         // This code runs on your server before upload

@@ -23,7 +23,6 @@ const ShopProduct = async ({ params } : { params: {shopSlug: string, productId: 
         .single()
 
     if (productData == null) return redirect("/shop/"+params.shopSlug)
-
     return (
         <div className="h-full">
             <div className="flex flex-col h-full w-[550px] mr-36 float-right mt-20">
@@ -31,7 +30,7 @@ const ShopProduct = async ({ params } : { params: {shopSlug: string, productId: 
                 <h2 className="font-semibold mt-2">{productData.price == null || productData.price == 0 ? "Free" : "$" + productData.price + " USD"}</h2>
                 <h2 className="font-semibold">Tax included</h2>
                 <Button className="my-4 border-default-100 hover:border-default-200" variant="outline">ADD TO CART</Button>
-                <p className="font-medium">{productData.description}</p>
+                <div dangerouslySetInnerHTML={{__html: productData.description}} className="mt-4"></div>
             </div>
         </div>
     )

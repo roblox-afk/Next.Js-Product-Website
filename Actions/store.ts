@@ -1,7 +1,8 @@
 'use server'
 
 import { CreateStoreSchema } from '@/components/Cards/CreateStoreContent'
-import { CreateProductSchema } from '@/app/@modal/newProduct/NewProductContent'
+import { CreateProductSchema } from '@/components/Cards/NewProductContent'
+import { CreateCategorySchema } from '@/components/Cards/NewCategoryContent'
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
@@ -18,6 +19,7 @@ export type StoreCollection = {
 
 export type StoreCategory = {
     id: string,
+    store_id: string,
     title: string,
     products: string[] | null,
     collections: string[] | null,
@@ -123,6 +125,21 @@ export const createProduct = async (formData: z.infer<typeof CreateProductSchema
     return newProductSupabase
 }
 
+export const createCategory = async (formData: z.infer<typeof CreateCategorySchema>, shopId: string) => {
+    const supabase = createClient()
+    const {data: newCategorySupabase, error} = await supabase
+        .from('categories')
+        .insert([
+            { title: formData.title, store_id: shopId }
+        ])
+        .select('*')
+        .single()
+    if (newCategorySupabase == null) return
+
+    revalidatePath("/dashboard/"+shopId+"/categories", "page")
+    return newCategorySupabase
+}
+
 export const deleteProduct = async (product: StoreProduct) => {
     const supabase = createClient()
     console.log(product)
@@ -133,4 +150,14 @@ export const deleteProduct = async (product: StoreProduct) => {
     console.log(error)
     const deletedProduct = await stripe.products.update(product.stripe_product_id, {active: false})
     revalidatePath("/dashboard/"+product.store_id+"/products", "page")
+}
+
+export const deleteCategory = async (category: StoreCategory) => {
+    const supabase = createClient()
+    const { error } = await supabase
+        .from('categories')
+        .delete()
+        .eq('id', category.id)
+    console.log(error)
+    revalidatePath("/dashboard/"+category.store_id+"/categories", "page")
 }
