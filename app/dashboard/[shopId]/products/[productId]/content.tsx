@@ -7,7 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form"
 import { StoreProduct } from "@/Actions/store"
 import { boolean, z } from "zod"
-import { AddMediaToProduct, OnSubmitDashboardProductPage, ProductSchema, RemoveMediaFromProduct } from './page';
+import { AddMediaToProduct, ProductSchema, RemoveMediaFromProduct } from './page';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createClient } from "@/lib/supabase/client"
 import Link from "next/link"
@@ -16,6 +16,7 @@ import { UploadButton } from "@/lib/uploadthing"
 import { Spinner } from "@nextui-org/react"
 import Image from "next/image"
 import { isVideoUrl } from "@/lib/utils"
+import { OnSubmitDashboardProductPage } from "./onSubmit"
 
 export const EditProductContent = ({
     createNewProduct,

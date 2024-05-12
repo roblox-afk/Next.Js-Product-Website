@@ -104,26 +104,6 @@ export async function RemoveMediaFromProduct(url: string, productId: string) {
     return newMediaArray
 }
 
-export async function OnSubmitDashboardProductPage(values: z.infer<typeof ProductSchema>, createNewProduct: boolean, params: {shopId: string, productId: string}) {
-    const supabase = createClient()
-    if (createNewProduct) {
-        const newProduct = await supabase
-    } else {
-        const updatedProduct = await supabase
-            .from('products')
-            .update({
-                title: values.title,
-                description: values.description,
-                //price: values.price,
-                //category: values.category,
-                //isFeatured: values.isFeatured,
-            })
-            .eq('id', params.productId)
-            .select()
-    }
-    return null
-}
-
 const DashboardEditProduct = async ({params} : {params: {shopId: string, productId: string}}) => {
     const supabase = createClient()
     const createNewProduct = params.productId == "new"

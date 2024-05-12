@@ -43,22 +43,6 @@ export const CategorySchema = z.object({
     })
 })
 
-export async function OnSubmitDashboardCategoryPage(values: z.infer<typeof CategorySchema>, createNewCategory: boolean, params: {shopId: string, categoryId: string}) {
-    const supabase = createClient()
-    if (createNewCategory) {
-        const newCategory = await supabase
-    } else {
-        const updatedCategory = await supabase
-            .from('categories')
-            .update({
-                title: values.title,
-            })
-            .eq('id', params.categoryId)
-            .select()
-    }
-    return null
-}
-
 const DashboardEditCategory = async ({params} : {params: {shopId: string, categoryId: string}}) => {
     const supabase = createClient()
     const createNewCategory = params.categoryId == "new"
