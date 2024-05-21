@@ -28,10 +28,10 @@ export function LockedShop() {
         }
     })
 
-    // TODO: Add Login functionality (unlocks website for user)
+    // TODO: Add Login functionality (unlocks website for user) (use localstorage to store login info for shop website)
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values)
+        localStorage.setItem("key", values.password)
     }
 
     return (

@@ -72,12 +72,11 @@ export const ProductDescription = ({
             },
         },
         extensions: [
-            Document, Paragraph, Text, Heading, StarterKit, Underline
+            StarterKit, Underline
         ],
         content: description,
         onUpdate({ editor }) {
             onChange(editor.getHTML())
-            console.log(editor.getHTML())
         }
     })
 

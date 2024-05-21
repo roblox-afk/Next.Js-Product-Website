@@ -24,7 +24,7 @@ const ProductCard = ({productData} : {productData: StoreProduct}) => {
             <h1 className="mx-7 text-md text-default-800 text-left font-bold mt-1.5">
                 <Link href={productPath}>{productData.title}</Link>
             </h1>
-            <p className="text-default-800 font-semibold text-md mx-7 mb-4">$10</p>
+            <p className="text-default-800 font-semibold text-md mx-7 mb-4">${productData.price}</p>
         </div>
     )
 }

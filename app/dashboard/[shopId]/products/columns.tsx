@@ -13,17 +13,26 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { Clipboard, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
-import { useEffect, useState } from "react"
+import { ArrowUpDown, Clipboard, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
+import { Suspense, useEffect, useState } from "react"
 import { title } from 'process';
 import { toast } from "sonner"
 import { Drawer, DrawerTrigger } from "@/components/ui/drawer"
 import Link from "next/link"
+import { Badge } from "@/components/ui/badge"
+import { Spinner } from "@nextui-org/react"
 
 export const columns: ColumnDef<StoreProduct>[] = [
     {
         accessorKey: "category",
-        header: "Category",
+        header: ({ column }) => {
+            return (
+                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() == "asc")}>
+                    Category
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
         cell: ({cell}) => {
             // eslint-disable-next-line react-hooks/rules-of-hooks
             const [title, setTitle] = useState("")
@@ -41,24 +50,45 @@ export const columns: ColumnDef<StoreProduct>[] = [
                 }
                 getTitle(cell)
             }, [cell])
-            return title
+            return title == "" ? <Spinner size="sm" color="default" /> : title
         },
     },
     {
         accessorKey: "title",
-        header: "Title"
+        header: ({ column }) => {
+            return (
+                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() == "asc")}>
+                    Title
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
     },
     {
         accessorKey: "isFeatured",
-        header: "Featured",
+        header: ({ column }) => {
+            return (
+                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() == "asc")}>
+                    Status
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
         cell: ({cell}) => {
-            return cell.getValue() == true ? 'Yes' : 'No'
+            return cell.getValue() == true ? <Badge className="bg-success-200">Active</Badge> : <Badge className="bg-default-200">Draft</Badge>
         },
         enableSorting: true,
     },
     {
         accessorKey: "price",
-        header: "Price",
+        header: ({ column }) => {
+            return (
+                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() == "asc")}>
+                    Price
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
         cell: ({ row }) => {
             const price = parseFloat(row.getValue("price"))
             const formatted = new Intl.NumberFormat("en-US", {

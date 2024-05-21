@@ -78,8 +78,8 @@ const SideBarShopSelect = ({shopId} : {shopId: string}) => {
                     <PopoverTrigger asChild className="border-default-100">
                         <Button variant="outline" className="w-full mx-2 bg-default-50 h-10 rounded-lg flex justify-center items-center">
                                     <Image src={currentStore.logoUrl} alt="profile picture" className="rounded-lg flex absolute left-7" width={30} height={30} />
-                                    <h5 className="absolute left-16 w-28 text-center text-ellipsis overflow-hidden">{currentStore.title}</h5>
-                                    <ChevronsUpDown className="flex absolute right-6" height="20px" color="#504949" />
+                                    <h5 className="absolute left-16 w-28 text-center text-ellipsis overflow-hidden indent-[-99999px] md:indent-0">{currentStore.title}</h5>
+                                    <ChevronsUpDown className="flex absolute right-5 md:right-6" height="20px" color="#504949" />
                         </Button>
                     </PopoverTrigger> :
                     <>

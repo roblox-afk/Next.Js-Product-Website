@@ -1,23 +1,37 @@
-import { createClient } from "@/lib/supabase/client"
-import { ProductSchema } from "./page"
+'use server'
+import { createClient } from "@/lib/supabase/server"
 import { z } from "zod"
+import { createProduct, StoreProduct, updatePriceOfProduct } from "@/Actions/store"
+import {ProductSchema} from "@/lib/schema/ProductSchema"
+import { redirect } from "next/navigation"
 
-export async function OnSubmitDashboardProductPage(values: z.infer<typeof ProductSchema>, createNewProduct: boolean, params: {shopId: string, productId: string}) {
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+
+export async function OnSubmitDashboardProductPage(values: z.infer<typeof ProductSchema>, createNewProduct: boolean, productData: StoreProduct, media: StoreProduct["media"]) {
     const supabase = createClient()
     if (createNewProduct) {
-        const newProduct = await supabase
+        createProduct(values, productData.store_id, media)
+        redirect(`/dashboard/${productData.store_id}/products`)
     } else {
-        const updatedProduct = await supabase
+        await supabase
             .from('products')
             .update({
                 title: values.title,
                 description: values.description,
-                //price: values.price,
-                //category: values.category,
-                //isFeatured: values.isFeatured,
+                category: values.category,
+                isFeatured: values.isFeatured,
             })
-            .eq('id', params.productId)
-            .select()
+            .eq('id', productData.id)
+        if (productData.title != values.title) {
+            await stripe.products.update(
+                productData.stripe_product_id,
+                {
+                    name: values.title
+                }
+            )
+        }
+        updatePriceOfProduct(productData, Number(values.price))
+        redirect(`/dashboard/${productData.store_id}/products`)
     }
     return null
 }

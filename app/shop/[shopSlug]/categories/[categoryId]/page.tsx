@@ -55,9 +55,10 @@ const ShopCategory = async ({ params } : { params: {shopSlug: string, categoryId
                     )
                 })}
             </div>
-            {productsData && collectionsData ? <Separator className="w-full mt-6 bg-default-100" /> : <></> }
+            {JSON.stringify(productsData) && JSON.stringify(collectionsData) != "[]" ? <Separator className="w-full mt-6 bg-default-100" /> : <></> }
             <div className="grid grid-cols-3 mt-6">
                 {productsData?.map((product) => {
+                    if (!product.isFeatured) return
                     return (
                         <ProductCard key={product.id} productData={product}  />
                     )

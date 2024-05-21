@@ -17,6 +17,7 @@ import { Spinner } from "@nextui-org/react"
 import Image from "next/image"
 import { isVideoUrl } from "@/lib/utils"
 import { OnSubmitDashboardCategoryPage } from "./onSubmit"
+import { Dialog } from "@/components/ui/dialog"
 
 export const EditCategoryContent = ({
     createNewCategory,
@@ -36,8 +37,6 @@ export const EditCategoryContent = ({
             title: createNewCategory ? "" : categoryData.title,
         }
     })
-
-    // TODO: Fix bug where Media doesn't show after added and not removed after remove
 
     function onSubmit(v: z.infer<typeof CategorySchema>) {
         const result = OnSubmitDashboardCategoryPage(v, createNewCategory, params)

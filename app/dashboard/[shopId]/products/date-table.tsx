@@ -5,6 +5,8 @@ import {
     ColumnDef,
     flexRender,
     getCoreRowModel,
+    getSortedRowModel,
+    SortingState,
     useReactTable,
 } from "@tanstack/react-table"
 
@@ -20,6 +22,8 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { DialogTrigger } from '@/components/ui/dialog';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -30,18 +34,23 @@ export function DataTable<TData, TValue>({
     columns,
     data,
 }: DataTableProps<TData, TValue>) {
+    const [sorting, setSorting] = useState<SortingState>([])
     const table = useReactTable({
         data,
         columns,
+        onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        state: {
+            sorting
+        }
     })
+    const storeId = usePathname().split("/")[2]
 
     return (
         <div className="w-full">
             <div className="flex items-center py-4">
-                <DialogTrigger asChild>
-                    <Button variant="outline" className='border-default-100 hover:border-default-200'><Plus strokeWidth={1.5} />New Product</Button>
-                </DialogTrigger>
+                    <Button variant="outline" className='border-default-100 hover:border-default-200' asChild><Link href={`/dashboard/${storeId}/products/new`}><Plus strokeWidth={1.5} />New Product</Link></Button>
             </div>
             <div className="rounded-md border border-default-100">
                 <Table>

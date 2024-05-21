@@ -17,7 +17,7 @@ const DashboardProducts = async ({params} : {params: {shopId: string}}) => {
 
     return (
         <Dialog>
-            <div className="flex flex-col w-1/2 mx-20 py-10">
+            <div className="flex flex-col w-3/4 mx-20 py-10">
                 <h1 className="text-4xl pb-7">Products</h1>
                 {products != null ?
                     <DataTable columns={columns} data={products} /> :

@@ -1,22 +1,21 @@
+"use client"
 import { findStoreWithSlug, storeData } from "@/Actions/store";
+import { CartContext } from "@/components/providers/cart-provider";
 import { DefaultShopLayout } from "@/components/Shop/layouts/default";
 import { ModernShopLayout } from "@/components/Shop/layouts/modern";
 import { LockedShop } from "@/components/Shop/Locked";
 import { createClient } from "@/lib/supabase/server";
-import { redirect, useSearchParams } from 'next/navigation';
-import { ReactElement, useEffect, useState } from "react";
+import { redirect, useRouter, useSearchParams } from 'next/navigation';
+import { ReactElement, useContext, useEffect, useState } from "react";
 
-const ShopPage = async ({ params } : { params: {shopSlug: string} }) => {
-    const supabase = createClient()
-    const layout = "default"
-    const { data, error } : {data: storeData | null, error: any} = await supabase
-        .from('stores')
-        .select('*')
-        .eq('slug', params.shopSlug)
-        .single()
-
-    if (data == null) return null
-
+const ShopPage = ({ params } : { params: {shopSlug: string} }) => {
+    const router = useRouter()
+    const successParam = useSearchParams().get("success")
+    const cartContext = useContext(CartContext)
+    if (successParam == "true") {
+        cartContext.clearCart()
+        router.push(`/shop/${params.shopSlug}`)
+    }
     return (
         <>
         </>
