@@ -11,7 +11,7 @@ export function ModernShopLayout({ children, storeData, categories, collections,
             <div className="h-20 w-full top-0 overflow-hidden z-10">
                 <NoSSR data={storeData} categories={categories} collections={collections} products={products} />
             </div>
-            <main className="overflow-clip h-full mt-20">
+            <main className="overflow-clip h-full">
                 {children}
             </main>
         </div>

@@ -18,7 +18,7 @@ import { Separator } from "@/components/ui/separator"
 import { ShoppingCart, View } from "lucide-react"
 import { storeData } from '@/Actions/store';
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import { Badge, ConfigProvider } from "antd"
 import { CartContext } from "@/components/providers/cart-provider"
 
 const ListItem = React.forwardRef<
@@ -51,7 +51,7 @@ const ModernShopNavBar = ({ data, categories, collections, products }: { data: s
     const cartContext = useContext(CartContext)
     return (
         <div className="flex absolute justify-center items-center bg-default-50 h-20 w-full">
-            <Link href={"/shop/" + data.slug} className="absolute left-40 bg-red-400">
+            <Link href={"/shop/" + data.slug} className="absolute left-10 sm:left-20 md:left-40 bg-red-400">
                 <Image src={data.logoUrl} alt="logo of store" width={75} height={75} />
             </Link>
             <NavigationMenu className="ml-24">
@@ -107,14 +107,25 @@ const ModernShopNavBar = ({ data, categories, collections, products }: { data: s
                     ))}
                 </NavigationMenuList>
             </NavigationMenu>
-            <Button asChild size="icon" className="bg-transparent hover:bg-default-100 absolute right-10">
+            <Button asChild size="icon" className="bg-transparent hover:bg-default-100 absolute right-5 sm:right-10">
                     <Link href={`/shop/${data.slug}/cart`}>
-                        <ShoppingCart />
-                        {cartContext.getTotalQuantity() > 0 ? (
-                            <Badge variant="destructive" className="relative float-right top-0">{cartContext.getTotalQuantity()}</Badge>
-                        ) : (
-                            <></>
-                        )}
+                        <ConfigProvider
+                            theme={{
+                                components: {
+                                    Badge: {
+                                        dotSize: 1,
+                                        statusSize: 2,
+                                        colorError: '#27272a',
+                                        colorErrorHover: '#27272a',
+                                        colorBorderBg: '#3f3f46',
+                                    }
+                                }
+                            }}
+                        >
+                            <Badge count={cartContext.getTotalQuantity()} size="small" className="border-none">
+                                <ShoppingCart />
+                            </Badge>
+                        </ConfigProvider>
                     </Link>
             </Button>
         </div>

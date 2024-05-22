@@ -7,17 +7,13 @@ import { useContext } from "react";
 
 const ProductsList = ({productsData}: {productsData: StoreProduct[]}) => {
     const cart = useContext(CartContext)
-    const productsDataInCart = productsData.filter(product => cart.items.some(cartItem => cartItem.id == product.id))
-    console.log(productsDataInCart)
-    console.log(cart.items)
+    const productsDataInCart = productsData.filter(product => cart.items.find(cartItem => cartItem.id === product.id))
     return (
-        <div className="flex mx-2 border-x border-divider h-3/4 w-1/2 scrollbar-hide">
+        <div className="flex mx-2 border-x border-divider h-full w-3/4 scrollbar-hide">
             <ScrollArea className="h-full flex flex-col w-full m-4">
-                {productsDataInCart.map((product) => {
-                    console.log("Product;:")
-                    console.log(product)
-                    return <CartProductCard key={product.id} productData={product} />
-                })}
+                {productsDataInCart.map((product) => (
+                    <CartProductCard key={product.id} productData={product} />
+                ))}
             </ScrollArea>
         </div>
     )

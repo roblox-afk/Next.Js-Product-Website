@@ -10,12 +10,12 @@ const CartProductCard = ({productData}: {productData: StoreProduct}) => {
     const cart = useContext(CartContext)
     return (
         <div className="w-full mb-4 border border-divider rounded-3xl h-24 flex flex-row">
-            <div className="mx-1 my-0.5 relative w-[90px] h-[90px] rounded-3xl overflow-hidden">
+            <div className="mx-1 my-0.5 relative min-w-[90px] min-h-[90px] rounded-3xl overflow-hidden">
                 <Image src={productData.media == null || productData.media[0].url == null ? "https://placeholder.com/120x120" : productData.media[0].url} alt="Image of product" fill />
             </div>
             <div className="h-full">
-                <h2 className="font-semibold mt-2 ml-2">{productData.title}</h2>
-                <div>${productData.price}/Per</div>
+                <h2 className="font-semibold mt-2 ml-2 text-xs md:text-medium lg:text-lg">{productData.title}</h2>
+                <h3 className="">${productData.price}/Per | ${cart.getProductQuantity(productData.id) * productData.price} Total</h3>
             </div>
             <div className="h-fit w-32 flex flex-row gap-1 relative my-auto justify-center content-center right-0 float-right mx-auto">
                 <Button variant="outline" className="h-8 border-divider" onClick={() => cart.addOneToCart(productData)}>+</Button>
