@@ -367,7 +367,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
             >
                 <div
                     className={cn(
-                        'min-h-10 rounded-md border border-input text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
+                        'min-h-10 rounded-md border-1 border-default-300 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
                         {
                             'px-3 py-2': selected.length !== 0,
                             'cursor-text': !disabled && selected.length !== 0,
@@ -448,7 +448,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                 </div>
                 <div className="relative">
                     {open && (
-                        <CommandList className="absolute top-1 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
+                        <CommandList className="absolute top-1 z-10 w-full rounded-md bg-default-100 border border-default-300 text-popover-foreground shadow-md outline-none animate-in">
                             {isLoading ? (
                                 <>{loadingIndicator}</>
                             ) : (

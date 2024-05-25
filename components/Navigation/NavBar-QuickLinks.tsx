@@ -39,13 +39,6 @@ const NavBarQuickLinks = ({loggedIn} : { loggedIn: boolean }) => {
                         </PopoverTrigger>
                         <PopoverContent className="bg-neutral-950 border-neutral-800 w-48">
                             <PopoverClose asChild>
-                                <Button asChild className="w-full bg-black">
-                                    <Link href="/settings/profile" className="w-full bg-transparent hover:bg-neutral-900 font-sans">
-                                        <Settings className="mr-1 w-10 h-10" /> Manage Account
-                                    </Link>
-                                </Button>
-                            </PopoverClose>
-                            <PopoverClose asChild>
                                 <Button className="w-full bg-transparent hover:bg-neutral-900 font-sans" onClick={onLogoutClicked}>
                                     <LogOut className="mr-1 w-4 h-4" /> Log Out
                                 </Button>

@@ -37,7 +37,7 @@ const config = withUt({
     },
   },
 
-  plugins: [require("tailwindcss-animate"), nextui({
+  plugins: [require("tailwindcss-animate"), require('tailwind-scrollbar-hide'), nextui({
     prefix: "nextui", // prefix for themes variables
     addCommonColors: false, // override common colors (e.g. "blue", "green", "pink").
     defaultTheme: "dark", // default theme from the themes object

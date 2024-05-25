@@ -1,8 +1,6 @@
 'use server'
 
 import { CreateStoreSchema } from '@/components/Cards/CreateStoreContent'
-import { CreateProductSchema } from '@/components/Cards/NewProductContent'
-import { CreateCategorySchema } from '@/components/Cards/NewCategoryContent'
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
@@ -10,13 +8,17 @@ import { z } from 'zod'
 import { cartProduct } from '@/components/providers/cart-provider'
 import { headers } from 'next/headers'
 import { ProductSchema } from '@/lib/schema/ProductSchema'
+import { CategorySchema } from '@/lib/schema/CategorySchema'
+import { CollectionSchema } from '@/lib/schema/CollectionSchema'
 
 export type StoreCollection = {
     id: string,
-    coverUrl: string | null,
+    store_id: string,
+    cover_url: string | null,
     title: string,
     category: string,
     products: string[] | null,
+    featured: boolean
 }
 
 export type StoreCategory = {
@@ -24,7 +26,8 @@ export type StoreCategory = {
     store_id: string,
     title: string,
     products: string[] | null,
-    collections: string[] | null,
+    banner_url: string,
+    featured_products: string[] | null
 }
 
 export type StoreProduct = {
@@ -35,6 +38,7 @@ export type StoreProduct = {
     description: string,
     price: number,
     isFeatured: boolean,
+    featured_in_category: boolean,
     category: string | null,
     collections: string[] | null,
     stripe_product_id: string,
@@ -128,7 +132,6 @@ export const startCheckout = async (cartItems: cartProduct[], shopSlug: string) 
             quantity: item.quantity
         }
     })
-    console.log(itemsData)
     const session = await stripe.checkout.sessions.create({
         line_items: itemsData,
         mode: 'payment',
@@ -148,11 +151,10 @@ export const createProduct = async (formData: z.infer<typeof ProductSchema>, sho
         }
     })
     if (newProduct == null) return
-    console.log(newProduct)
     const {data: newProductSupabase, error} = await supabase
         .from('products')
         .insert([
-            { media: mediaData, category: formData.category, stripe_product_id: newProduct.id, stripe_price_id: newProduct.default_price, price: formData.price, title: formData.title, store_id: shopId, description: formData.description }
+            { media: mediaData, isFeatured: formData.isFeatured, category: formData.category, stripe_product_id: newProduct.id, stripe_price_id: newProduct.default_price, price: formData.price, title: formData.title, store_id: shopId, description: formData.description }
         ])
         .select('*')
         .single()
@@ -169,7 +171,6 @@ export const createProduct = async (formData: z.infer<typeof ProductSchema>, sho
                 .eq('id', formData.category)
         }
     }
-    console.log(newProductSupabase)
     if (newProductSupabase == null) return
 
     revalidatePath("/dashboard/"+shopId+"/products", "page")
@@ -178,29 +179,93 @@ export const createProduct = async (formData: z.infer<typeof ProductSchema>, sho
 
 export const deleteProduct = async (product: StoreProduct) => {
     const supabase = createClient()
-    console.log(product)
     const { error } = await supabase
         .from('products')
         .delete()
         .eq('id', product.id)
-    console.log(error)
     const deletedProduct = await stripe.products.update(product.stripe_product_id, {active: false})
     revalidatePath("/dashboard/"+product.store_id+"/products", "page")
 }
 
-export const createCategory = async (formData: z.infer<typeof CreateCategorySchema>, shopId: string) => {
+export const createCategory = async (formData: z.infer<typeof CategorySchema>, shopId: string, banner_url: string) => {
     const supabase = createClient()
-    const {data: newCategorySupabase, error} = await supabase
+    console.log("test")
+    const {data: newCategorySupabase} = await supabase
         .from('categories')
         .insert([
-            { title: formData.title, store_id: shopId }
+            { title: formData.title, store_id: shopId, banner_url: banner_url }
         ])
         .select('*')
         .single()
+    console.log(newCategorySupabase)
+
     if (newCategorySupabase == null) return
 
     revalidatePath("/dashboard/"+shopId+"/categories", "page")
     return newCategorySupabase
+}
+
+export const addFeaturedProduct = async (productId: string) => {
+    const supabase = createClient()
+    const {data: productData} = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', productId)
+        .single()
+    if (productData == null) return
+    const {data: oldCategory}: {data: StoreCategory | null} = await supabase
+        .from('categories')
+        .select('*')
+        .eq('id', productData.category)
+        .single()
+    if (oldCategory == null) return
+    await supabase
+        .from('categories')
+        .update({
+            featured_products: [...oldCategory.featured_products || [], productId]
+        })
+        .eq('id', productData.category)
+        .select()
+    await supabase
+        .from('products')
+        .update({
+            featured_in_category: true
+        })
+        .eq('id', productId)
+        .select()
+    revalidatePath("/dashboard/"+productData.store_id+"/categories", "page")
+}
+
+export const removeFeaturedProduct = async (productId: string) => {
+    const supabase = createClient()
+    const {data: productData} = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', productId)
+        .single()
+    if (productData == null) return
+    const {data: oldCategory}: {data: StoreCategory | null} = await supabase
+        .from('categories')
+        .select('*')
+        .eq('id', productData.category)
+        .single()
+    if (oldCategory == null) return
+    if (oldCategory.featured_products == null) return
+    await supabase
+        .from('categories')
+        .update({
+            featured_products: oldCategory.featured_products.filter(v => v != productId)
+        })
+        .eq('id', productData.category)
+        .select()
+    await supabase
+        .from('products')
+        .update({
+            featured_in_category: false
+        })
+        .eq('id', productId)
+        .select()
+    revalidatePath("/dashboard/"+productData.store_id+"/categories", "page")
 }
 
 export const deleteCategory = async (category: StoreCategory) => {
@@ -209,6 +274,30 @@ export const deleteCategory = async (category: StoreCategory) => {
         .from('categories')
         .delete()
         .eq('id', category.id)
-    console.log(error)
     revalidatePath("/dashboard/"+category.store_id+"/categories", "page")
+}
+
+export const createCollection = async (formData: z.infer<typeof CollectionSchema>, shopId: string, banner_url: string) => {
+    const supabase = createClient()
+    const {data: newCollectionSupabase} = await supabase
+        .from('collections')
+        .insert([
+            { title: formData.title, store_id: shopId, cover_url: banner_url, featured: formData.featured, category: formData.category }
+        ])
+        .select('*')
+        .single()
+
+    if (newCollectionSupabase == null) return
+
+    revalidatePath("/dashboard/"+shopId+"/collections", "page")
+    return newCollectionSupabase
+}
+
+export const deleteCollection = async (collection: StoreCollection) => {
+    const supabase = createClient()
+    const { error } = await supabase
+        .from('collections')
+        .delete()
+        .eq('id', collection.id)
+    revalidatePath("/dashboard/"+collection.store_id+"/collections", "page")
 }

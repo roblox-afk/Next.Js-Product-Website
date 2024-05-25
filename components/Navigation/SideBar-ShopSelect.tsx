@@ -67,7 +67,6 @@ const SideBarShopSelect = ({shopId} : {shopId: string}) => {
 
     function changeStore(id: string) {
         const pathAfterId = pathname.replace(`/dashboard/${shopId}`, "")
-        console.log(pathAfterId)
         router.push(`/dashboard/${id}${pathAfterId}`)
     }
 

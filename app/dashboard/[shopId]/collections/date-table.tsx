@@ -50,7 +50,7 @@ export function DataTable<TData, TValue>({
     return (
         <div className="w-full">
             <div className="flex items-center py-4">
-                    <Button variant="outline" className='border-default-100 hover:border-default-200' asChild><Link href={`/dashboard/${storeId}/categories/new`}><Plus strokeWidth={1.5} />New Category</Link></Button>
+                    <Button variant="outline" className='border-default-100 hover:border-default-200' asChild><Link href={`/dashboard/${storeId}/collections/new`}><Plus strokeWidth={1.5} />New Collection</Link></Button>
             </div>
             <div className="rounded-md border border-default-100">
                 <Table>

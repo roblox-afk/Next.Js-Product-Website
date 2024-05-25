@@ -7,19 +7,19 @@ import { Dialog } from "@/components/ui/dialog"
 import DialogSetup from "@/components/DialogSetup"
 import { Drawer } from "@/components/ui/drawer"
 
-const DashboardProducts = async ({params} : {params: {shopId: string}}) => {
+const DashboardCollections = async ({params} : {params: {shopId: string}}) => {
     const supabase = createClient()
-    const { data: products, error } = await supabase
-        .from("products")
+    const { data: collections, error } = await supabase
+        .from("collections")
         .select('*')
         .eq('store_id', params.shopId)
 
     return (
         <Dialog>
             <div className="flex flex-col w-3/4 mx-20 py-10">
-                <h1 className="text-4xl pb-7">Products</h1>
-                {products != null ?
-                    <DataTable columns={columns} data={products} /> :
+                <h1 className="text-4xl pb-7">Collections</h1>
+                {collections != null ?
+                    <DataTable columns={columns} data={collections} /> :
                     <>
                         <Skeleton className="" />
                     </>
@@ -29,4 +29,4 @@ const DashboardProducts = async ({params} : {params: {shopId: string}}) => {
     )
 }
 
-export default DashboardProducts
+export default DashboardCollections

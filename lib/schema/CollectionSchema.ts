@@ -1,8 +1,7 @@
 "use client"
 import { z } from "zod"
-import { MultiSelectOptionSchema } from "./MultiSelectOptionSchema"
 
-export const ProductSchema = z.object({
+export const CollectionSchema = z.object({
     title: z.string().superRefine((val, ctx) => {
         if (val.length < 5) {
             ctx.addIssue({
@@ -24,11 +23,6 @@ export const ProductSchema = z.object({
             })
         }
     }),
-    description: z.string().min(5, {"message": "Too short of a description. Minimum 5 characters."}),
-    price: z.string().refine((val) => !Number.isNaN(parseInt(val, 10)), {
-        message: "Expected number, received a string"
-    }),
     category: z.string(),
-    collections: z.array(MultiSelectOptionSchema),
-    isFeatured: z.boolean()
+    featured: z.boolean()
 })

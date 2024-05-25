@@ -67,7 +67,6 @@ export default function CartProvider({children}: {children: React.ReactNode}) {
         const id = data.id
         const quantity = getProductQuantity(id)
         let newCartItems
-        console.log(data)
         if (quantity == 0) {
             newCartItems =
                 [
@@ -82,7 +81,6 @@ export default function CartProvider({children}: {children: React.ReactNode}) {
         } else {
             newCartItems = cartProducts.map((product: cartProduct) => product.id == id ? { ...product, quantity: product.quantity + 1 } : product )
         }
-        console.log(newCartItems)
         setCartProducts(newCartItems)
         localStorage.setItem("cartItems", JSON.stringify(newCartItems))
     }

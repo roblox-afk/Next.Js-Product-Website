@@ -3,7 +3,6 @@ import {Divider, ScrollShadow} from "@nextui-org/react"
 import { createClient } from "@/lib/supabase/server"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Dialog } from "@/components/ui/dialog"
-import NewProductContent from "@/components/Cards/NewProductContent"
 import DialogSetup from "@/components/DialogSetup"
 import { Drawer } from "@/components/ui/drawer"
 import { ProductDescription } from "@/components/Tiptap/productDescription"
@@ -74,15 +73,18 @@ const DashboardEditProduct = async ({params} : {params: {shopId: string, product
         .eq('store_id', params.shopId)
         .eq('id', params.productId)
         .single()
+    if (!product && !createNewProduct) redirect(`/dashboard/${params.shopId}/products`)
     const { data: categories } = await supabase
         .from('categories')
         .select('*')
         .eq('store_id', params.shopId)
-    console.log(categories)
-    if (!product && !createNewProduct) redirect(`/dashboard/${params.shopId}/products`)
+    const {data: collections} = await supabase
+        .from('collections')
+        .select('*')
+        .eq('store_id', params.shopId)
 
     return (
-        <EditProductContent createNewProduct={createNewProduct} categories={categories} productData={product} params={params} />
+        <EditProductContent createNewProduct={createNewProduct} categories={categories} collections={collections} productData={product} params={params} />
     )
 }
 

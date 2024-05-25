@@ -36,6 +36,11 @@ const ShopDashboardLayout = async ({
             title: "Categories",
             path: `/dashboard/${params.shopId}/categories`,
             icon: "Folder"
+        },
+        {
+            title: "Collections",
+            path: `/dashboard/${params.shopId}/collections`,
+            icon: "LibraryBig"
         }
     ]
 

@@ -7,7 +7,7 @@ const NoSSR = dynamic(() => import('@/components/Navigation/shop/modern/shopMode
 export function ModernShopLayout({ children, storeData, categories, collections, products } : { children: React.ReactNode, storeData: storeData, categories: StoreCategory[] | null, collections: StoreCollection[], products: StoreProduct[] | null }) {
 
     return (
-        <div className="h-screen overflow-hidden">
+        <div className="h-screen scrollbar-hide">
             <div className="h-20 w-full top-0 overflow-hidden z-10">
                 <NoSSR data={storeData} categories={categories} collections={collections} products={products} />
             </div>

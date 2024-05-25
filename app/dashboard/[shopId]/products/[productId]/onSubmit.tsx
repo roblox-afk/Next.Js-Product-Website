@@ -7,18 +7,20 @@ import { redirect } from "next/navigation"
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
-export async function OnSubmitDashboardProductPage(values: z.infer<typeof ProductSchema>, createNewProduct: boolean, productData: StoreProduct, media: StoreProduct["media"]) {
+export async function OnSubmitDashboardProductPage(values: z.infer<typeof ProductSchema>, createNewProduct: boolean, productData: StoreProduct, params: {shopId: string, productId: string}, media: StoreProduct["media"]) {
     const supabase = createClient()
     if (createNewProduct) {
-        createProduct(values, productData.store_id, media)
-        redirect(`/dashboard/${productData.store_id}/products`)
+        createProduct(values, params.shopId, media)
+        redirect(`/dashboard/${params.shopId}/products`)
     } else {
+        const collectionsList: string[] = values.collections.map(collection => collection.value)
         await supabase
             .from('products')
             .update({
                 title: values.title,
                 description: values.description,
                 category: values.category,
+                collections: collectionsList,
                 isFeatured: values.isFeatured,
             })
             .eq('id', productData.id)

@@ -14,52 +14,55 @@ import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { EditCategoryContent } from "./content"
+import { EditCollectionContent } from "./content"
 import { revalidatePath } from "next/cache"
 import { isVideoUrl } from "@/lib/utils"
 import axios from "axios"
 
-export async function AddBannerToProduct(url: string, categoryId: string) {
+export async function AddBannerToCollection(url: string, categoryId: string) {
     const supabase = createClient()
-    console.log(url)
     await supabase
-        .from('categories')
+        .from('collections')
         .update({
-            banner_url: url
+            cover_url: url
         })
         .eq('id', categoryId)
         .select()
 }
 
-export async function RemoveBannerFromCategory(url: string, categoryId: string) {
+export async function RemoveBannerFromCollection(url: string, categoryId: string) {
     const supabase = createClient()
     const imageKey = url.substring(url.lastIndexOf('/') + 1)
     console.log(url)
     await supabase
-        .from('categories')
+        .from('collections')
         .update({
-            banner_url: ""
+            cover_url: ""
         })
         .eq('id', categoryId)
         .select()
     axios.post("/api/uploadthing/delete", {imageKey})
 }
 
-const DashboardEditCategory = async ({params} : {params: {shopId: string, categoryId: string}}) => {
+const DashboardEditCollection = async ({params} : {params: {shopId: string, collectionId: string}}) => {
     const supabase = createClient()
-    const createNewCategory = params.categoryId == "new"
+    const createNewCollection = params.collectionId == "new"
 
-    const { data: category } = await supabase
-        .from("categories")
+    const { data: collection } = await supabase
+        .from("collections")
         .select('*')
         .eq('store_id', params.shopId)
-        .eq('id', params.categoryId)
+        .eq('id', params.collectionId)
         .single()
-    if (!category && !createNewCategory) redirect(`/dashboard/${params.shopId}/categories`)
+    const { data: categories } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('store_id', params.shopId)
+    if (!collection && !createNewCollection) redirect(`/dashboard/${params.shopId}/collections`)
 
     return (
-        <EditCategoryContent createNewCategory={createNewCategory} categoryData={category} params={params} />
+        <EditCollectionContent createNewCollection={createNewCollection} categories={categories} collectionData={collection} params={params} />
     )
 }
 
-export default DashboardEditCategory
+export default DashboardEditCollection

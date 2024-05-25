@@ -1,19 +1,27 @@
-import { createClient } from "@/lib/supabase/client"
-import { CategorySchema } from "./page"
+'use server'
+import { createClient } from "@/lib/supabase/server"
 import { z } from "zod"
+import { createProduct, StoreCategory, StoreProduct, updatePriceOfProduct } from "@/Actions/store"
+import {ProductSchema} from "@/lib/schema/ProductSchema"
+import { redirect } from "next/navigation"
+import { createCategory } from '@/Actions/store';
+import { CategorySchema } from "@/lib/schema/CategorySchema"
 
-export async function OnSubmitDashboardCategoryPage(values: z.infer<typeof CategorySchema>, createNewCategory: boolean, params: {shopId: string, categoryId: string}) {
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+
+export async function OnSubmitDashboardCategoryPage(values: z.infer<typeof CategorySchema>, createNewCategory: boolean, banner_url: string, params: {shopId: string, categoryId: string}) {
     const supabase = createClient()
     if (createNewCategory) {
-        const newCategory = await supabase
+        createCategory(values, params.shopId, banner_url)
+        redirect(`/dashboard/${params.shopId}/categories`)
     } else {
-        const updatedCategory = await supabase
+        await supabase
             .from('categories')
             .update({
                 title: values.title,
             })
             .eq('id', params.categoryId)
-            .select()
+        redirect(`/dashboard/${params.shopId}/categories`)
     }
     return null
 }
