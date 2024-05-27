@@ -47,7 +47,7 @@ export default function NavBar({ loggedIn}: {loggedIn: boolean}) {
                 className="sm:hidden"
                 />
                 <NavbarBrand>
-                    <p className="font-bold text-inherit">PLACEHOLDER</p>
+                    <p className="font-bold text-inherit">Comify Inc.</p>
                 </NavbarBrand>
             </NavbarContent>
 
@@ -55,11 +55,6 @@ export default function NavBar({ loggedIn}: {loggedIn: boolean}) {
                 <NavbarItem>
                     <Link className="foreground" href="/">
                         Home
-                    </Link>
-                </NavbarItem>
-                <NavbarItem>
-                    <Link className="foreground" href="/products">
-                        Products
                     </Link>
                 </NavbarItem>
                 <NavbarItem>

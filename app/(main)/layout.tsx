@@ -16,7 +16,6 @@ const MainLayout = async ({
                 <NavBar loggedIn={user == null ? false : true } />
             </div>
             {children}
-            <Footer />
         </div>
     )
 }

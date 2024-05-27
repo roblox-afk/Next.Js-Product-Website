@@ -21,7 +21,7 @@ export function Footer() {
                 </Listbox>
             </div>
             <Divider className="" />
-            <p className="text-center bottom-2 w-full">©PLACEHOLDER, All Rights Reserved</p>
+            <p className="text-center bottom-2 w-full">©COMIFY, All Rights Reserved</p>
         </div>
     )
 }

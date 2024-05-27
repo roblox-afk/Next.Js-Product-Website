@@ -2,7 +2,7 @@ import { NavbarItem, Button as NextUiButton } from "@nextui-org/react";
 import { Button } from "@/components/ui/button";
 import Image from 'next/image'
 import Link from "next/link";
-import { Settings, LogOut } from "lucide-react"
+import { Settings, LogOut, User } from "lucide-react"
 import {
     Popover,
     PopoverContent,
@@ -11,6 +11,7 @@ import {
 import profilePicturePlaceholder from "@/public/profilePicturePlaceholder.png"
 import { PopoverClose } from "@radix-ui/react-popover";
 import { logout } from "@/Actions/auth";
+import { Avatar } from "antd";
 
 const NavBarQuickLinks = ({loggedIn} : { loggedIn: boolean }) => {
 
@@ -29,13 +30,7 @@ const NavBarQuickLinks = ({loggedIn} : { loggedIn: boolean }) => {
                 <NavbarItem>
                     <Popover>
                         <PopoverTrigger>
-                            <Image
-                                src={profilePicturePlaceholder}
-                                alt="profile picture"
-                                width={50}
-                                height={50}
-                                className="rounded-full"
-                            />
+                            <Avatar className="bg-default-50 bg-opacity-35 hover:bg-opacity-50" size={50} icon={<User />} />
                         </PopoverTrigger>
                         <PopoverContent className="bg-neutral-950 border-neutral-800 w-48">
                             <PopoverClose asChild>

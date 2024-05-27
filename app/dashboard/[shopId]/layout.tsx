@@ -23,11 +23,6 @@ const ShopDashboardLayout = async ({
             icon: "Home"
         },
         {
-            title: "Analytics",
-            path: `/dashboard/${params.shopId}/analytics`,
-            icon: "BarChart3"
-        },
-        {
             title: "Products",
             path: `/dashboard/${params.shopId}/products`,
             icon: "Package"

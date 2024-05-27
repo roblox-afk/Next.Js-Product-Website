@@ -1,39 +1,19 @@
-import {Button, Divider, ScrollShadow} from "@nextui-org/react"
+import { createClient } from "@/lib/supabase/server";
+import ShopDashboardContent from "./content";
 
-const ShopDashboard = () => {
+export default async function ShopDashboard({
+    params
+}: {
+    params: {shopId: string}
+}) {
+    const supabase = createClient()
+    const {data: shopData} = await supabase
+        .from('stores')
+        .select('*')
+        .eq('id', params.shopId)
+        .single()
+    if (shopData == null) return
     return (
-        <ScrollShadow hideScrollBar className="w-[100%]">
-            <div className="h-60 text-center content-center bt-10">
-                <h1 className="font-semibold">TwentyTwoCharactersOnly</h1>
-                <p className="mx-[10%] font-sans">
-                    Lorem ipsum dolor sit amet, consectettur adipscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    Ut morbi tincidunt augue interdum velit.
-                    Diam phasellus vestibulum lorem sed risus.
-                    Ultrices neque ornare aenean euismod elementum.
-                </p>
-            </div>
-            <Divider />
-            <div className="h-60 text-center content-center bt-10">
-                <h1 className="font-semibold">TwentyTwoCharactersOnly</h1>
-                <p className="mx-[10%] font-sans">
-                    Lorem ipsum dolor sit amet, consectettur adipscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    Ut morbi tincidunt augue interdum velit.
-                    Diam phasellus vestibulum lorem sed risus.
-                    Ultrices neque ornare aenean euismod elementum.
-                </p>
-            </div>
-            <Divider />
-            <div className="h-60 text-center content-center bt-10">
-                <h1 className="font-semibold">TwentyTwoCharactersOnly</h1>
-                <p className="mx-[10%] font-sans">
-                    Lorem ipsum dolor sit amet, consectettur adipscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    Ut morbi tincidunt augue interdum velit.
-                    Diam phasellus vestibulum lorem sed risus.
-                    Ultrices neque ornare aenean euismod elementum.
-                </p>
-            </div>
-            <Divider />
-        </ScrollShadow>
-    )
+        <ShopDashboardContent params={params} shopData={shopData} />
+    );
 }
-export default ShopDashboard;

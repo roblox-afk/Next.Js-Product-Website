@@ -1,8 +1,10 @@
 import { StoreCategory, StoreCollection, storeData, StoreProduct } from "@/Actions/store";
-import { ModernShopLayout } from "@/components/Shop/layouts/modern";
 import { LockedShop } from "@/components/Shop/Locked";
 import { createClient } from "@/lib/supabase/client"
+import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
+
+const NoSSR = dynamic(() => import('@/components/Shop/layouts/modern'), { ssr: false })
 
 const ShopLayout = async({
     children,
@@ -12,7 +14,7 @@ const ShopLayout = async({
     params: {shopSlug: string}
 }) => {
     const supabase = createClient()
-    const layout = "default"
+    //const localStoragePass = getLocalStoragePass()
     const { data: storeData, error: storeError } : {data: storeData | null, error: any} = await supabase
         .from('stores')
         .select('*')
@@ -38,13 +40,9 @@ const ShopLayout = async({
 
     if (storeCollections == null) return redirect("/")
 
-    if (storeData.published) {
-        return (
-            <ModernShopLayout storeData={storeData} categories={storeCategories} collections={storeCollections} products={storeProducts}>{children}</ModernShopLayout>
-        )
-    } else {
-        return <LockedShop />
-    }
+    return (
+        <NoSSR storeData={storeData} categories={storeCategories} collections={storeCollections} products={storeProducts}>{children}</NoSSR>
+    )
 }
 
 export default ShopLayout

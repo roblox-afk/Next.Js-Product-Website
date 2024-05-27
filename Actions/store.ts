@@ -57,6 +57,7 @@ export type storeData = {
     slug: string,
     logoUrl: string,
     published: boolean,
+    password: string,
 }
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
@@ -300,4 +301,23 @@ export const deleteCollection = async (collection: StoreCollection) => {
         .delete()
         .eq('id', collection.id)
     revalidatePath("/dashboard/"+collection.store_id+"/collections", "page")
+}
+
+export const setShopStatus = async (shopId: string, newStatus: boolean) => {
+    const supabase = createClient()
+    await supabase
+        .from('stores')
+        .update({ published: newStatus })
+        .eq('id', shopId)
+        .select()
+}
+
+export const setShopPassword = async (shopId: string, newPassword: string) => {
+    const supabase = createClient()
+    if (newPassword == "" || newPassword.length < 3) return
+    await supabase
+        .from('stores')
+        .update({ password: newPassword })
+        .eq('id', shopId)
+        .select()
 }

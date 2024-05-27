@@ -14,11 +14,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export function LockedShop() {
-
+    const router = useRouter()
     const formSchema = z.object({
-        password: z.string().min(8).max(100)
+        password: z.string().max(100)
     })
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -28,10 +29,9 @@ export function LockedShop() {
         }
     })
 
-    // TODO: Add Login functionality (unlocks website for user) (use localstorage to store login info for shop website)
-
-    async function onSubmit(values: z.infer<typeof formSchema>) {
+    function onSubmit(values: z.infer<typeof formSchema>) {
         localStorage.setItem("key", values.password)
+        router.refresh()
     }
 
     return (
@@ -50,7 +50,7 @@ export function LockedShop() {
                             render={({field}) => (
                                 <FormItem>
                                     <FormControl>
-                                        <Input type="password" placeholder="Enter Password" className="bg-default-100 border-default-300 border-2" />
+                                        <Input {...field} type="password" placeholder="Enter Password" className="bg-default-100 border-default-300 border-2" />
                                     </FormControl>
                                 </FormItem>
                             )}
