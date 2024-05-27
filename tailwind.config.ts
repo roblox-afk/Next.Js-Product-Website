@@ -1,7 +1,8 @@
 import type { Config } from "tailwindcss"
 import { nextui } from "@nextui-org/react"
+import { withUt } from "uploadthing/tw";
 
-const config = {
+const config = withUt({
   darkMode: "class",
   content: [
     './pages/**/*.{ts,tsx}',
@@ -9,6 +10,7 @@ const config = {
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+    './node_modules/@tremor/**/*.{js,ts,jsx,tsx}',
 	],
   prefix: "",
   theme: {
@@ -16,17 +18,30 @@ const config = {
       center: true,
       padding: "2rem",
       screens: {
-        "2xl": "1400px",
+        'xs': '475px',
+        '2xl': {'max': '1535px'},
       },
     },
+    screens: {
+      'phone': '320px',
+      'phone-lg': '540px',
+      '2xl': '1535px',
+      'xl': '1279px',
+      'lg': '1023px',
+      'md': '767px',
+      'sm': '639px'
+    },
+    transparent: 'transparent',
+    current: 'currentColor',
     extend: {
     },
   },
-  plugins: [require("tailwindcss-animate"), nextui({
+
+  plugins: [require("tailwindcss-animate"), require('tailwind-scrollbar-hide'), nextui({
     prefix: "nextui", // prefix for themes variables
     addCommonColors: false, // override common colors (e.g. "blue", "green", "pink").
-    defaultTheme: "light", // default theme from the themes object
-    defaultExtendTheme: "light", // default theme to extend on custom themes
+    defaultTheme: "dark", // default theme from the themes object
+    defaultExtendTheme: "dark", // default theme to extend on custom themes
     layout: {}, // common layout tokens (applied to all themes)
     themes: {
       light: {
@@ -206,6 +221,6 @@ const config = {
       // ... custom themes
     },
   })],
-} satisfies Config
+}) satisfies Config
 
 export default config
