@@ -1,7 +1,6 @@
 import { findStoreWithSlug, storeData } from "@/Actions/store";
 import { CartContext } from "@/components/providers/cart-provider";
 import { DefaultShopLayout } from "@/components/Shop/layouts/default";
-import { ModernShopLayout } from "@/components/Shop/layouts/modern";
 import { LockedShop } from "@/components/Shop/Locked";
 import { Carousel, CarouselContent } from "@/components/ui/carousel";
 import { createClient } from "@/lib/supabase/server";

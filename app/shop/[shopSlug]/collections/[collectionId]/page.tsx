@@ -2,7 +2,6 @@ import { findStoreWithSlug, StoreCategory, StoreCollection, storeData, StoreProd
 import CollectionCard from "@/components/Cards/Shop/CollectionCard";
 import ProductCard from "@/components/Cards/Shop/ProductCard";
 import { DefaultShopLayout } from "@/components/Shop/layouts/default";
-import { ModernShopLayout } from "@/components/Shop/layouts/modern";
 import { LockedShop } from "@/components/Shop/Locked";
 import { Separator } from "@/components/ui/separator";
 import { createClient } from "@/lib/supabase/server";

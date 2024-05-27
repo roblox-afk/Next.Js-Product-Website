@@ -1,5 +1,5 @@
 "use client"
-import { AddMediaToProduct } from "@/app/dashboard/[shopId]/products/[productId]/page"
+import { AddMediaToProduct } from "@/app/dashboard/[shopId]/products/[productId]/onSubmit"
 import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog"
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"

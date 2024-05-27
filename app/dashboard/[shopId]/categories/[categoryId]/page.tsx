@@ -19,32 +19,6 @@ import { revalidatePath } from "next/cache"
 import { isVideoUrl } from "@/lib/utils"
 import axios from "axios"
 
-export async function AddBannerToProduct(url: string, categoryId: string) {
-    const supabase = createClient()
-    console.log(url)
-    await supabase
-        .from('categories')
-        .update({
-            banner_url: url
-        })
-        .eq('id', categoryId)
-        .select()
-}
-
-export async function RemoveBannerFromCategory(url: string, categoryId: string) {
-    const supabase = createClient()
-    const imageKey = url.substring(url.lastIndexOf('/') + 1)
-    console.log(url)
-    await supabase
-        .from('categories')
-        .update({
-            banner_url: ""
-        })
-        .eq('id', categoryId)
-        .select()
-    axios.post("/api/uploadthing/delete", {imageKey})
-}
-
 const DashboardEditCategory = async ({params} : {params: {shopId: string, categoryId: string}}) => {
     const supabase = createClient()
     const createNewCategory = params.categoryId == "new"
