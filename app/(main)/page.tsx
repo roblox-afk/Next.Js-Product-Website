@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {Divider, ScrollShadow} from "@nextui-org/react"
 import Image from "next/image";
+import Link from "next/link";
 
 const Main = () => {
     return (
@@ -13,7 +14,11 @@ const Main = () => {
                 <p className="mx-[10%] font-sans">
                     Comify is supporting the next generation of entrepreneurs, the world’s biggest brands, and everyone in between
                 </p>
-                <Button variant="outline" className="my-4 border-default-300 hover:bg-default-300">Join Now</Button>
+                <Button variant="outline" className="my-4 border-default-300 hover:bg-default-300" asChild>
+                    <Link href="/dashboard">
+                        Join Now
+                    </Link>
+                </Button>
             </div>
             <Divider />
             <div className="relative h-60 flex flex-row gap-4 content-center bt-10 text-left">

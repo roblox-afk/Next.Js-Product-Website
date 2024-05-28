@@ -29,6 +29,6 @@ export const ProductSchema = z.object({
         message: "Expected number, received a string"
     }),
     category: z.string(),
-    collections: z.array(MultiSelectOptionSchema),
+    collections: z.array(MultiSelectOptionSchema).optional(),
     isFeatured: z.boolean()
 })
