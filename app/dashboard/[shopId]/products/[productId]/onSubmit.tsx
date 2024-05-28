@@ -59,7 +59,7 @@ export async function OnSubmitDashboardProductPage(values: z.infer<typeof Produc
         createProduct(values, params.shopId, media)
         redirect(`/dashboard/${params.shopId}/products`)
     } else {
-        const collectionsList: string[] = values.collections.map(collection => collection.value)
+        const collectionsList: string[] = values.collections?.map(collection => collection.value) || []
         await supabase
             .from('products')
             .update({
